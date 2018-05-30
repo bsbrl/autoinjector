@@ -1,0 +1,163 @@
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+import os, sys, time
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from sensapex import SensapexDevice, UMP, UMPError
+from injectioncontrolmod import injection 
+import user
+import numpy as np
+
+class motorcontroller(QThread):
+    """ QThread class to control 3-axis sensapex manipulators. 
+    Inpts for movement are:
+    zdrift 
+    stepsizex (distance into tissue)
+    stepsizey (distance between injections)
+    approachdist = the distance from the edge of the tissue that the pipette pulls out after each injection  (taken from user input in GUI)
+    injectiondepth = the depth of injection (taken from user input in GUI)
+    ncells (number of steps in y to make)
+    """
+
+    signal = pyqtSignal(str)
+
+    def __init__(self, zdrift, stepsizex, stepsizey, approachdist, injectiondepth, speed):
+        QThread.__init__(self)
+        self.ump = UMP.get_ump()
+        self.devids = self.ump.list_devices()
+        self.devs = {i:SensapexDevice(i)
+         for i in self.devids}
+        self.zdrift = zdrift
+        self.stepsizex = stepsizex
+        self.stepsizey = stepsizey
+        self.approachdist = approachdist
+        self.injectiondepth = injectiondepth
+        self.speed = speed
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        self.run_trajectory()
+
+    def run_trajectory(self):
+        position0 = self.devs[2].get_pos() #current position
+
+        #sometimes there is an error with the sensapex manipulator and it says its position is zero, this ruins the trajectory
+        if position0[0] < 100:
+            print('sensapex error, wait')
+            time.sleep(0.3)
+            position0 = self.devs[2].get_pos() #the delay should fix it
+            
+        print("position0 = " +str(position0))
+
+        # if using a 3-axis manipulator, the xaxis is 0. Else, it's 3
+        if len(position0) == 3:
+            xaxis = 0
+        elif len(position0) == 4:
+            xaxis = 3
+
+        #go to edge of tissue
+        position1 = position0[:]
+        position2 = position1[:]
+        position2[xaxis] += (self.stepsizex)
+        self.devs[2].goto_pos(position2, self.speed)
+        print("edge of tissue" + str(position2))
+
+        time.sleep(0.1)
+        self.waitforit('x manipulator busy')
+
+        #go into tissue and inject, wait for confirmation from arduino
+        pos2 = position2
+        position3 = position2[:]
+        position3[xaxis] += self.injectiondepth
+        self.devs[2].goto_pos(position3, self.speed)
+        print("injection site" + str(position3))
+
+        #pull out of tissue
+        posfinalout = position3[:]
+        posfinalout[xaxis]-= (self.injectiondepth+self.approachdist)
+        self.devs[2].goto_pos(posfinalout, self.speed)
+        self.waitforit('pull out busy')
+        
+        #step along tissue in y direction
+        positiony = posfinalout[:]
+        positiony[1] += self.stepsizey
+        self.devs[2].goto_pos(positiony, self.speed)
+        time.sleep(0.1)
+        self.waitforit('y manipulator busy')
+
+        #correct for Zdrift if applicable
+        positionzdrift = positiony[:]
+        positionzdrift[2] += self.zdrift
+        self.devs[2].goto_pos(positionzdrift, self.speed)
+        print("final position = " + str(positionzdrift))
+
+        #go to edge of tissue
+        positionedge = positionzdrift[:]
+        positionedge[xaxis] += self.approachdist
+        self.devs[2].goto_pos(positionedge, self.speed)
+        time.sleep(0.2)
+        print("final position = " + str(positionedge))
+                
+    def waitforit(self,msg):
+        while self.devs[2].is_busy():
+            time.sleep(0.01)
+            print(msg)
+
+#---------------------Thread Class for motor position----------------------------
+class motorpositionThread(QThread):
+    """ 
+    Qthread class. This class handles getting current position of motors and sending
+    out motor information to GUI, no input required.
+    """
+    motorpos = pyqtSignal(list)
+    motorposnum = []
+
+    def __init__(self):
+        QThread.__init__(self)
+        ump = UMP.get_ump()
+        self.devids = ump.list_devices()
+        self.devs = {i:SensapexDevice(i) for i in self.devids}
+
+    def __del__(self):
+        self.wait()
+
+    def _get_position(self):
+        """
+        asks motors for position, return [x,y,z] in uM 
+        """ 
+        self.print_pos()
+        self.current_motor = self.devs[2].get_pos()
+        print(self.current_motor)
+        try:
+            self.motorposition = self.pos_numerical
+            return self.motorposition
+        except:
+            print('Manipulator error')
+
+    def print_pos(self,timeout=None):
+        line = ""
+        for i in self.devids:
+            self.dev = self.devs[i]
+            try:
+                pos = str(self.dev.get_pos(timeout=timeout))
+                pos_numerical = self.dev.get_pos(timeout=timeout)
+                self.pos_numerical = pos_numerical
+            except Exception as err:
+                pos = str(err.args[0])
+                self.pos_numerical = [0,0,0]
+            self.pos = pos + " " * (30 - len(pos))
+
+    def run(self):
+        """ 
+        what actually calls _get_position and emits the signal
+        """
+
+        while True:
+            motorposition = self._get_position()
+            try:
+                self.motorpos.emit(motorposition)
+            except:
+                print('manipulator error')
+            self.sleep(1)
+            
