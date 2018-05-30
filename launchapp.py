@@ -162,6 +162,7 @@ if __name__ == '__main__':
     main = camerasetting()
     main.show()
     sys.exit(app.exec_())
+           
 
 
 

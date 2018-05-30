@@ -12,6 +12,7 @@ from resolutiontest.gotoposition import GetPos
 import cv2
 import serial
 import time
+import sys
 import numpy as np
 
 
@@ -38,6 +39,8 @@ class ControlWindow(QWidget):
             self.getposition.start()
             self.getposition.motorpos.connect(self.showmotorposition)
         except:
+            self.error_msg.setText("Manipulator error, make sure manipulator is connected, and on. Restart application.")
+            self.error_msg.exec_()
             print("motor not plugged in")
 
         #initiate video stream thread using camera settings
@@ -661,13 +664,6 @@ class ControlWindow(QWidget):
             self.error_msg.setText("You have to start the trajectory in order to be able to stop it...")
             self.error_msg.exec_()
 
-
-#--------------------- Bioler plate ------------------------------------------------------
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    app.setApplicationName('MyWindow')
-    main = ControlWindow()
-    main.show()
-    sys.exit(app.exec_())
-
+    def closeEvent(self, event):
+        self.close()
+        sip.destroyonexit(True)
