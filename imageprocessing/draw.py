@@ -51,28 +51,22 @@ class drawobj(object):
 
     def interpolatetrajectory(self):
         #performs spline interpolation of coordinates along the height of the image
-        #del self.yvals[0] #delete first value of coordinate
-        #del self.xvals[0]
-        print(len(self.yvals))
-        print(self.yvals)
-
-        order = np.argsort(self.yvals)
-        print(order)
-        
-        self.height = max(self.yvals)
-        spl = UnivariateSpline(self.yvals,self.xvals)
-        ynew = np.arange(min(self.yvals),self.height,1)
-        xnew = (spl(ynew))
-
         print('xvals')
         print(self.xvals)
         print('yvals')
         print(self.yvals)
+        yvals = np.array(self.yvals)
+        xvals = np.array(self.xvals)
+        order = np.argsort(self.yvals)        
+        self.height = max(self.yvals)
+        spl = UnivariateSpline(yvals[order],xvals[order], s = len(yvals)+100)
+        ynew = np.arange(min(self.yvals),self.height,1)
+        xnew = (spl(ynew))
+
         print('xnew')
         print(xnew)
         print('y')
         print(ynew)
-        #plt.show()
 
         for i in range(0,len(xnew)-1):
             print(i)

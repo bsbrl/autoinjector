@@ -471,6 +471,8 @@ class ControlWindow(QWidget):
             np.set_printoptions(threshold=np.inf)
             print(self.d.drawedgecoord1)
         except:
+            self.error_msg.setText(">> CAM error, is camera plugged in?")
+            self.error_msg.exec_()
             self.response_monitor_window.append(">> CAM error, is camera plugged in?")
         
     """
@@ -605,63 +607,49 @@ class ControlWindow(QWidget):
     These functions control the trajectory and pressure controls of the GUI
     """
 
-    def settrigger(self):
-        try:
-            self.pulseduration = self.pressuredurationman.text()
-            self.injectortrigset = injection(arduino,self.compensationpressureval, 1,self.pressureslidervalue_manual,self.pulseduration,'bp')
-            self.injectortrigset.start()
-        except:
-            self.error_msg.setText("Set the compensation pressure, puleduration, and injection pressure. If already set verify arduino is working.")
-            self.error_msg.exec_()
-
     def setautomatedparameters(self):
-        #try:
-        self.compensationpressureval = self.pressureslidervalue
-        self.compensationpressureval =str(self.compensationpressureval)
-        self.ncell=self.num_cells.text()
-        self.approachdist = self.trajectoryplan_approach.text()
-        self.deptintissue = self.trajectoryplan_injectiondepth.text()
-        self.stepsize = self.trajectoryplan_spacingbtwn.text()
-        self.motorspeed = self.trajectoryplan_speed.text()
-        self.ninjection = 1
-        self.injectpressurevoltage = self.compensationpressureval
-        self.pulseduration = 10
+        try:
+            self.compensationpressureval = self.pressureslidervalue
+            self.compensationpressureval =str(self.compensationpressureval)
+            self.ncell=self.num_cells.text()
+            self.approachdist = self.trajectoryplan_approach.text()
+            self.deptintissue = self.trajectoryplan_injectiondepth.text()
+            self.stepsize = self.trajectoryplan_spacingbtwn.text()
+            self.motorspeed = self.trajectoryplan_speed.text()
+            self.injectpressurevoltage = self.compensationpressureval
+            self.response_monitor_window.append(">> Values set")
+            self.injector_compensate = injection(arduino,self.compensationpressureval, 0,self.injectpressurevoltage,0,'bp')
+            self.injector_compensate.start()
 
-        self.response_monitor_window.append(">> Values set")
-        #try:
-        self.injector_compensate = injection(arduino,self.compensationpressureval, 0,self.injectpressurevoltage,0,'bp')
-        self.injector_compensate.start()
-        #except:
-        #     self.error_msg.setText("Arduino error, is arduino plugged in?")
-        #     self.error_msg.exec_()                
-        #except:
-        #     self.error_msg.setText("Please enter all parameter values.")
-        #     self.error_msg.exec_()
+        except:
+             self.error_msg.setText("Error, did you enter all parameters? Is the arduino plugged in?")
+             self.error_msg.exec_()                
+
         
     def runalongedgetrajectory(self):
-        #try:
-        #get values from GUI
-        currentpos = self.vidctrl.positionnow 
-        approach = (int(float(self.approachdist)*1000)) #convert microns to nm
-        depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
-        depthintissue = depth
-        space = int(float(self.trajectoryplan_spacingbtwn.text()))
-        self.speed = (int((self.trajectoryplan_speed.text()))*10)
-        spacing = space
-    
-        #implement trajectory 
-        self.offset = []
-        self.offset.append(int(self.foffset.text()))
-        self.offset.append(int(self.boffset.text()))
+        try:
+            #get values from GUI
+            currentpos = self.vidctrl.positionnow 
+            approach = (int(float(self.approachdist)*1000)) #convert microns to nm
+            depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
+            depthintissue = depth
+            space = int(float(self.trajectoryplan_spacingbtwn.text()))
+            self.speed = (int((self.trajectoryplan_speed.text()))*10)
+            spacing = space
+        
+            #implement trajectory 
+            self.offset = []
+            self.offset.append(int(self.foffset.text()))
+            self.offset.append(int(self.boffset.text()))
+            print(self.offset)
 
-        print(self.offset)
+            self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed, self.offset)
+            self.trajimplement.start()
+            self.trajimplement.finished.connect(self.updateresponse)
 
-        self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed, self.offset)
-        self.trajimplement.start()
-
-        #except:
-        #      self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.")
-        #     self.error_msg.exec_()
+        except:
+            self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.")
+            self.error_msg.exec_()
 
     def updateresponse(self):
         self.response_monitor_window.append(">> Number of injections =" + str(self.trajimplement.statusnumber))
