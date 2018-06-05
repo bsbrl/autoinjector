@@ -41,14 +41,13 @@ class motorcontroller(QThread):
 
     def run_trajectory(self):
         position0 = self.devs[2].get_pos() #current position
-
+        print("position0 = " +str(position0))
+        
         #sometimes there is an error with the sensapex manipulator and it says its position is zero, this ruins the trajectory
         if position0[0] < 100:
             print('sensapex error, wait')
             time.sleep(0.3)
-            position0 = self.devs[2].get_pos() #the delay should fix it
-            
-        print("position0 = " +str(position0))
+            position0 = self.devs[2].get_pos() #the delay should fix it        
 
         # if using a 3-axis manipulator, the xaxis is 0. Else, it's 3
         if len(position0) == 3:
@@ -62,41 +61,49 @@ class motorcontroller(QThread):
         position2[xaxis] += (self.stepsizex)
         self.devs[2].goto_pos(position2, self.speed)
         print("edge of tissue" + str(position2))
+        time.sleep(0.5)
+        #self.waitforit('go to edge busy')
 
-        time.sleep(0.1)
-        self.waitforit('x manipulator busy')
-
-        #go into tissue and inject, wait for confirmation from arduino
+        #go into tissue and inject
         pos2 = position2
         position3 = position2[:]
         position3[xaxis] += self.injectiondepth
         self.devs[2].goto_pos(position3, self.speed)
+        print("injection depth =" +str(self.injectiondepth))
         print("injection site" + str(position3))
+        time.sleep(0.5)
+        #self.waitforit('go to inject busy')
 
         #pull out of tissue
         posfinalout = position3[:]
         posfinalout[xaxis]-= (self.injectiondepth+self.approachdist)
         self.devs[2].goto_pos(posfinalout, self.speed)
-        self.waitforit('pull out busy')
+        print("pull out tissue position = " + str(posfinalout))
+        time.sleep(0.5)
+        #self.waitforit('pull out busy')
         
         #step along tissue in y direction
         positiony = posfinalout[:]
         positiony[1] += self.stepsizey
         self.devs[2].goto_pos(positiony, self.speed)
-        time.sleep(0.1)
+        print("move in y pos = " + str(positiony))
+        time.sleep(0.01)
         self.waitforit('y manipulator busy')
 
         #correct for Zdrift if applicable
         positionzdrift = positiony[:]
         positionzdrift[2] += self.zdrift
         self.devs[2].goto_pos(positionzdrift, self.speed)
-        print("final position = " + str(positionzdrift))
+        print("z drift position = " + str(positionzdrift))
+        time.sleep(0.02)
+        self.waitforit('z manipulator busy')
 
         #go to edge of tissue
         positionedge = positionzdrift[:]
         positionedge[xaxis] += self.approachdist
         self.devs[2].goto_pos(positionedge, self.speed)
-        time.sleep(0.2)
+        time.sleep(0.02)
+        self.waitforit('go close to edge busy')
         print("final position = " + str(positionedge))
                 
     def waitforit(self,msg):

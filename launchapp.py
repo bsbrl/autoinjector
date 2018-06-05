@@ -147,7 +147,6 @@ class camerasetting(QWidget):
 
 	def updaterestest(self,text):
 		self.restest = text
-		print(self.restest)
 
 	def close1(self):
 		self.close()
