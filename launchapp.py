@@ -2,7 +2,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
-from application_minimal import ControlWindow
+from application import ControlWindow
 
 class camerasetting(QWidget):
 	def __init__(self):
@@ -86,7 +86,6 @@ class camerasetting(QWidget):
 		mainlayout = QVBoxLayout()
 		saveexitbutton = QPushButton("Save and Exit")
 		saveexitbutton.clicked.connect(self.close1)
-		#mainlayout.addWidget(groupboxlayout0)
 		mainlayout.addWidget(groupboxlayout1)
 		mainlayout.addWidget(groupboxlayout2)
 		mainlayout.addWidget(groupboxlayout3)
