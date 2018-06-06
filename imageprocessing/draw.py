@@ -59,7 +59,7 @@ class drawobj(object):
         xvals = np.array(self.xvals)
         order = np.argsort(self.yvals)        
         self.height = max(self.yvals)
-        spl = UnivariateSpline(yvals[order],xvals[order], s = len(yvals)+100)
+        spl = UnivariateSpline(yvals[order],xvals[order], s = len(yvals)+500)
         ynew = np.arange(min(self.yvals),self.height,1)
         xnew = (spl(ynew))
 

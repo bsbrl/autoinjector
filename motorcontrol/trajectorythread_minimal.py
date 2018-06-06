@@ -23,10 +23,9 @@ class trajectoryimplementor(QThread):
                 (generates from draw edge coord or automatic edge detection function)
     ncells = number of cells to inject (taken from user input in GUI)
     speed = speed of manipulator entry
-    offset = offset
     """
 
-    def __init__(self, xytheta, thetaz, currentpos, pixelsize, approachdist, depthintissue, spacingbtwn, edgecoord, ncells, speed,offset):
+    def __init__(self, xytheta, thetaz, currentpos, pixelsize, approachdist, depthintissue, spacingbtwn, edgecoord, ncells, speed):
         QThread.__init__(self)
         self.stopsignal = False
         self.xthetarad = xytheta
@@ -39,7 +38,6 @@ class trajectoryimplementor(QThread):
         self.edgecoords = edgecoord
         self.numbercells = ncells
         self.speed = speed
-        self.offset1 = offset
         
     def __del__(self):
         self.wait()
@@ -79,18 +77,10 @@ class trajectoryimplementor(QThread):
             x = xf - x0
             y = yf - y0
             print('x, y = ' + str(x) +',' +str(y))
-            a = np.array([[-np.cos(self.xthetarad), -np.sin(self.xthetarad)], [-np.sin(self.xthetarad), -np.cos(self.xthetarad)]])
+            a = np.array([[-np.cos(0.0338853299), -np.sin(self.xthetarad)], [-np.sin(0.0338853299), -np.cos(self.xthetarad)]])
             b = np.array ((x,y))
             print('a =' + str(a))
             print('b = ' + str(b))
-
-            #corrects for b offset at 20x magnifcation
-            if b[0] <= 0:
-                self.offset = self.offset1[0]
-            else:
-                self.offset = self.offset1[1]
-
-            print("offset = " + str(self.offset))
 
             manipulator = np.linalg.solve(a, b)
             print('dx,dy = ' + str(manipulator))
@@ -101,8 +91,8 @@ class trajectoryimplementor(QThread):
             k = trajectoryarray[(i-1)]
             print('k = ' + str(k))
             zcorrected = (k[0][0]/(np.cos(self.thetaz)))
-            print('zcorrected =' + str(zcorrected))  
-            zcorrected = zcorrected-self.offset
+            print('zcorrected =' + str(zcorrected))
+            zcorrected = zcorrected
             zdrift = -zcorrected*(np.cos(self.thetaz))
 
             self.motorcalib3 = mc(zdrift, zcorrected, k[0][1], self.approachdist, self.depthintissue, self.speed)

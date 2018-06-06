@@ -295,20 +295,6 @@ class ControlWindow(QWidget):
             self.leftside.addWidget(subpoint)
             self.leftside.addWidget(go_to_centerpoint)
 
-
-        grouptrajoffset = QGroupBox("Trajectory Offset")
-        trajoffset = QGridLayout()
-        foffset = QLabel("F Offset")
-        boffset = QLabel("B Offset")
-        self.foffset = QLineEdit(self)
-        self.boffset = QLineEdit(self)
-        trajoffset.addWidget(foffset, 0, 0)
-        trajoffset.addWidget(self.foffset, 0, 1)
-        trajoffset.addWidget(boffset, 1, 0)
-        trajoffset.addWidget(self.boffset, 1, 1)
-        grouptrajoffset.setLayout(trajoffset)
-
-        self.leftside.addWidget(grouptrajoffset)
         self.leftside.addStretch()
         self.rightside=QVBoxLayout()
         self.rightside.addWidget(groupbox_motorpanel_window)
@@ -445,7 +431,7 @@ class ControlWindow(QWidget):
         ymotorline = np.sqrt((np.square(ycameraline) + np.square(xcameraline)))
         self.ymotortheta = np.arctan(float(xcameraline)/ycameraline)
         self.ymotorthetadeg =np.rad2deg(self.ymotortheta)
-        print(self.ymotorthetadeg)
+        print(self.ymotortheta)
         self.yscale = self.motorcalibdist/ymotorline
 
         #calculate total FOV of microscope in micromenters
@@ -630,29 +616,23 @@ class ControlWindow(QWidget):
 
         
     def runalongedgetrajectory(self):
-        try:
+        #try:
             #get values from GUI
-            currentpos = self.vidctrl.positionnow 
-            approach = (int(float(self.approachdist)*1000)) #convert microns to nm
-            depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
-            depthintissue = depth
-            space = int(float(self.trajectoryplan_spacingbtwn.text()))
-            self.speed = (int((self.trajectoryplan_speed.text()))*10)
-            spacing = space
-        
-            #implement trajectory 
-            self.offset = []
-            self.offset.append(int(self.foffset.text()))
-            self.offset.append(int(self.boffset.text()))
-            print(self.offset)
+        currentpos = self.vidctrl.positionnow 
+        approach = (int(float(self.approachdist)*1000)) #convert microns to nm
+        depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
+        depthintissue = depth
+        space = int(float(self.trajectoryplan_spacingbtwn.text()))
+        self.speed = (int((self.trajectoryplan_speed.text()))*10)
+        spacing = space
 
-            self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed, self.offset)
-            self.trajimplement.start()
-            self.trajimplement.finished.connect(self.updateresponse)
+        self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed)
+        self.trajimplement.start()
+        self.trajimplement.finished.connect(self.updateresponse)
 
-        except:
-            self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.")
-            self.error_msg.exec_()
+        #except:
+        #    self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.")
+        #    self.error_msg.exec_()
 
     def updateresponse(self):
         self.response_monitor_window.append(">> Number of injections =" + str(self.trajimplement.statusnumber))
