@@ -48,62 +48,73 @@ class trajectoryimplementor(QThread):
 
     def implement_traj(self):
 
-        trajectoryarray = []
-        for i in range(1,int(self.numbercells)):
-            self.statusnumber = i
-            self.motorfinished = False
-            print("Injection number = ")
-            print(i)
+        try:
+            trajectoryarray = []
+            for i in range(1,int(self.numbercells)):
+                self.statusnumber = i
+                self.motorfinished = False
+                print("Injection number = ")
+                print(i)
 
-            if self.stopsignal == True:
-                break
+                if self.stopsignal == True:
+                    break
 
-            if i == 1:
-                x0 = self.currentposition[0]
-                y0 = self.currentposition[1]
-                arrayf = self.edgecoords[int(i*self.spacingbtwn)]
-                xf = arrayf[0]
-                yf = arrayf[1] 
+                if i == 1:
+                    x0 = self.currentposition[0]
+                    y0 = self.currentposition[1]
+                    arrayf = self.edgecoords[int(i*self.spacingbtwn)]
+                    xf = arrayf[0]
+                    yf = arrayf[1] 
 
-            if i  > 1:
-                arrayf = self.edgecoords[int(i*self.spacingbtwn)]
-                print(int(i*self.spacingbtwn))
-                xf = arrayf[0]
-                yf = arrayf[1]
-                array1 = self.edgecoords[(int((i-1)*self.spacingbtwn))]
-                x0 = array1[0]
-                y0 = array1[1]
+                if i  > 1:
+                    arrayf = self.edgecoords[int(i*self.spacingbtwn)]
+                    print(int(i*self.spacingbtwn))
+                    xf = arrayf[0]
+                    yf = arrayf[1]
+                    array1 = self.edgecoords[(int((i-1)*self.spacingbtwn))]
+                    x0 = array1[0]
+                    y0 = array1[1]
 
-            x = xf - x0
-            y = yf - y0
-            print('x, y = ' + str(x) +',' +str(y))
-            a = np.array([[-np.cos(0.0338853299), -np.sin(self.xthetarad)], [-np.sin(0.0338853299), -np.cos(self.xthetarad)]])
-            b = np.array ((x,y))
-            print('a =' + str(a))
-            print('b = ' + str(b))
+                x = xf - x0
+                y = yf - y0
+                print('x, y = ' + str(x) +',' +str(y))
+                a = np.array([[-np.cos(0.0338853299), -np.sin(self.xthetarad)], [-np.sin(0.0338853299), -np.cos(self.xthetarad)]])
+                b = np.array ((x,y))
+                print('a =' + str(a))
+                print('b = ' + str(b))
 
-            manipulator = np.linalg.solve(a, b)
-            print('dx,dy = ' + str(manipulator))
-            manipulator_motorscaled = manipulator*self.pixelsize*1000 #(in nanometers)
-            print('manipulator_motorscaled =' + str(manipulator_motorscaled))
+                manipulator = np.linalg.solve(a, b)
+                print('dx,dy = ' + str(manipulator))
+                manipulator_motorscaled = manipulator*self.pixelsize*1000 #(in nanometers)
+                print('manipulator_motorscaled =' + str(manipulator_motorscaled))
 
-            trajectoryarray.append([manipulator_motorscaled])
-            k = trajectoryarray[(i-1)]
-            print('k = ' + str(k))
-            zcorrected = (k[0][0]/(np.cos(self.thetaz)))
-            print('zcorrected =' + str(zcorrected))
-            zcorrected = zcorrected
-            zdrift = -zcorrected*(np.cos(self.thetaz))
+                trajectoryarray.append([manipulator_motorscaled])
+                k = trajectoryarray[(i-1)]
+                print('k = ' + str(k))
+                zcorrected = (k[0][0]/(np.cos(self.thetaz)))
+                print('zcorrected =' + str(zcorrected))
+                zcorrected = zcorrected
+                zdrift = -zcorrected*(np.cos(self.thetaz))
 
-            self.motorcalib3 = mc(zdrift, zcorrected, k[0][1], self.approachdist, self.depthintissue, self.speed)
-            self.connect(self.motorcalib3, SIGNAL("finished()"),self.turnsignal)
-            self.motorcalib3.start()
+                self.motorcalib3 = mc(zdrift, zcorrected, k[0][1], self.approachdist, self.depthintissue, self.speed)
+                self.connect(self.motorcalib3, SIGNAL("finished()"),self.turnsignal)
+                self.motorcalib3.start()
 
-            while self.motorfinished == False:
-                time.sleep(0.1)
-                
-        print(trajectoryarray)
+                while self.motorfinished == False:
+                    time.sleep(0.1)
+                    
+            print(trajectoryarray)
 
+        except:
+
+            print('except')
+            print(trajectoryarray)
+
+        #pull out last injection command...
+        print('pull out start')
+        dist = 100000
+        pulloutlastpos = self.motorcalib3.finalpullout(dist, int(dist*self.thetaz))
+        print('pulloutend')
 
     def turnsignal(self):
         #switches for loop to calculate and send next command to manipulator

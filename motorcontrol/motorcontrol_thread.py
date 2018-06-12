@@ -55,14 +55,13 @@ class motorcontroller(QThread):
         elif len(position0) == 4:
             xaxis = 3
 
-        #go to edge of tissue
+        #go to edge of tissue 
         position1 = position0[:]
         position2 = position1[:]
         position2[xaxis] += (self.stepsizex)
         self.devs[2].goto_pos(position2, self.speed)
         print("edge of tissue" + str(position2))
         time.sleep(0.5)
-        #self.waitforit('go to edge busy')
 
         #go into tissue and inject
         pos2 = position2
@@ -72,7 +71,6 @@ class motorcontroller(QThread):
         print("injection depth =" +str(self.injectiondepth))
         print("injection site" + str(position3))
         time.sleep(0.5)
-        #self.waitforit('go to inject busy')
 
         #pull out of tissue
         posfinalout = position3[:]
@@ -80,7 +78,6 @@ class motorcontroller(QThread):
         self.devs[2].goto_pos(posfinalout, self.speed)
         print("pull out tissue position = " + str(posfinalout))
         time.sleep(0.5)
-        #self.waitforit('pull out busy')
         
         #step along tissue in y direction
         positiony = posfinalout[:]
@@ -110,6 +107,24 @@ class motorcontroller(QThread):
         while self.devs[2].is_busy():
             time.sleep(0.01)
             print(msg)
+
+    def finalpullout(self, dist, zdist):
+        current_pos = self.devs[2].get_pos()
+        print("current pos =" + str(current_pos))
+
+        if len(current_pos) == 3:
+            xaxis = 0
+        elif len(current_pos) == 4:
+            xaxis = 3
+
+        end_pos = current_pos[:]
+        end_pos[xaxis] -= dist
+        end_pos[2] += zdist
+        print("end pos =" + str(end_pos))
+        self.devs[2].goto_pos(end_pos, 1000)
+
+
+
 
 #---------------------Thread Class for motor position----------------------------
 class motorpositionThread(QThread):

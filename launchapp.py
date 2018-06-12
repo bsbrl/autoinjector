@@ -2,7 +2,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
-from application import ControlWindow
+from application_minimal import ControlWindow
 
 class camerasetting(QWidget):
 	def __init__(self):
