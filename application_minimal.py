@@ -320,7 +320,7 @@ class ControlWindow(QWidget):
         self.setGeometry(100,100,200,200)
         self.setLayout(self.mastergrid)
         self.show()
-        self.setWindowIcon(QIcon('C:\\Users\\taverna\\Desktop\\Autoinjector_Code_cameraselect\\favicon2.png'))
+        self.setWindowIcon(QIcon('favicon.png'))
         self.timer = QTimer()  
         self.mastergrid.addLayout(self.leftside,1,0,1,1)
         self.mastergrid.addWidget(groupbox_image_analysis_window,1,1,1,1)
@@ -399,7 +399,7 @@ class ControlWindow(QWidget):
     def showdialog(self):
         #calibrates motors 
         msg = QMessageBox()
-        msg.setWindowIcon(QIcon('C:\\Users\\taverna\\Desktop\\Autoinjector_code\\favicon2.png'))
+        msg.setWindowIcon(QIcon('favicon.png'))
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Motor Calibration")
 
