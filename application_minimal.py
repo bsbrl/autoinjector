@@ -78,7 +78,7 @@ class ControlWindow(QWidget):
         self.image_analysis_window_box = QVBoxLayout()
         self.image_analysis_window_box.addWidget(self.vidctrl.image_analysis_window)
         self.image_analysis_window_box.addStretch()
-        groupbox_image_analysis_window= QGroupBox('Microscope Stream')
+        groupbox_image_analysis_window= QGroupBox('Microscope Video Stream')
         groupbox_image_analysis_window.setLayout(self.image_analysis_window_box)
 
         #motor calibration controls
