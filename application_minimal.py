@@ -103,7 +103,7 @@ class ControlWindow(QWidget):
         motorcalib_window.addWidget(instruct2,3,0)
         motorcalib_window.addWidget(self.motorcalib_window_pipetteangle,3,1)
         motorcalib_window.addWidget(motorcalib_window_pipetteangle_button,3,2)
-        groupbox_motorcalib_window = QGroupBox('Motor Calibration')
+        groupbox_motorcalib_window = QGroupBox('Manipulator Calibration')
         groupbox_motorcalib_window.setLayout(motorcalib_window)
 
         #manual image processing controls
@@ -114,15 +114,15 @@ class ControlWindow(QWidget):
         groupbox_image_processing_windowmanual = QGroupBox('Draw Desired Trajectory')
         groupbox_image_processing_windowmanual.setLayout(image_processing_windowmanual)
 
-        #Miscellaneous Controls
+        #view drawn edge
         misc = QVBoxLayout()
-        misc_hideshape = QPushButton("Hide Shapes")
+        misc_hideshape = QPushButton("Hide Edge")
         misc_hideshape.clicked.connect(self.vidctrl.hideshapes)
-        misc_showshape = QPushButton("Show Shapes")
+        misc_showshape = QPushButton("Show Edge")
         misc_showshape.clicked.connect(self.vidctrl.showshapes)
         misc.addWidget(misc_showshape)
         misc.addWidget(misc_hideshape)
-        groupbox_misc = QGroupBox('Miscellaneous Controls')
+        groupbox_misc = QGroupBox('Display Drawn Edge')
         groupbox_misc.setLayout(misc)
         
         #Trajectory planning
@@ -133,12 +133,10 @@ class ControlWindow(QWidget):
         self.trajectoryplan_labeldepth = QLabel("Depth ("+  self.mu +"m)                      ")
         self.trajectoryplan_labelspace = QLabel("Spacing ("+  self.mu +"m)                  ")
         self.trajectoryplan_labelspeed = QLabel("Speed (%)                       ")
-        num_cellslabel = QLabel("Number of Cells               ")
         self.trajectoryplan_approach = QLineEdit(self)
         self.trajectoryplan_injectiondepth= QLineEdit(self)
         self.trajectoryplan_spacingbtwn = QLineEdit(self)
         self.trajectoryplan_speed = QLineEdit(self)
-        self.num_cells = QLineEdit(self)
         self.trajectoryplan_runbutton = QPushButton("Run Trajectory")
         self.trajectoryplan_runbutton.clicked.connect(self.runalongedgetrajectory)
         self.trajectoryplan_stopbutton = QPushButton("Stop Process")
@@ -147,7 +145,7 @@ class ControlWindow(QWidget):
         depth = QHBoxLayout()
         space = QHBoxLayout()
         speed = QHBoxLayout()
-        num = QHBoxLayout()
+
         approach.addWidget(self.trajectoryplan_labelaproachdist)
         approach.addWidget(self.trajectoryplan_approach)
         depth.addWidget(self.trajectoryplan_labeldepth)
@@ -156,13 +154,10 @@ class ControlWindow(QWidget):
         space.addWidget(self.trajectoryplan_spacingbtwn)
         speed.addWidget(self.trajectoryplan_labelspeed)
         speed.addWidget(self.trajectoryplan_speed)
-        num.addWidget(num_cellslabel)
-        num.addWidget(self.num_cells)
         self.trajectoryplan.addLayout(approach)
         self.trajectoryplan.addLayout(depth)
         self.trajectoryplan.addLayout(space)
         self.trajectoryplan.addLayout(speed)
-        self.trajectoryplan.addLayout(num)
         groubox_trajectory = QGroupBox('Automated Microinjection Controls')
         groubox_trajectory.setLayout(self.trajectoryplan)
 
@@ -269,7 +264,7 @@ class ControlWindow(QWidget):
         self.response_monitor_window = QTextBrowser()
         self.response_monitor_window.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.response_monitorgrid.addWidget(self.response_monitor_window)
-        groupbox_response_monitorgrid= QGroupBox('Response Monitor')
+        groupbox_response_monitorgrid= QGroupBox('System Status')
         groupbox_response_monitorgrid.setLayout(self.response_monitorgrid)
 
         #organize main window
@@ -605,7 +600,7 @@ class ControlWindow(QWidget):
         try:
             self.compensationpressureval = self.pressureslidervalue
             self.compensationpressureval =str(self.compensationpressureval)
-            self.ncell=self.num_cells.text()
+            self.ncell= 200
             self.approachdist = self.trajectoryplan_approach.text()
             self.deptintissue = self.trajectoryplan_injectiondepth.text()
             self.stepsize = self.trajectoryplan_spacingbtwn.text()

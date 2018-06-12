@@ -4,13 +4,7 @@ import cv2
 import numpy as np
 import time
 import MMCorePy
-#for tracking tip
-import os
-import time
-from imutils import face_utils
 from restestgrid import ResTest
-
-
 import os
 import sys
 MM_PATH = os.path.join('C:', os.path.sep, 'Program Files',
@@ -75,9 +69,11 @@ class vidcontrols(QThread):
             if self.cam == 'HamamatsuHam_DCAM': #convert to 8bit
                 self.frame = (self.frame/256).astype('uint8')
                 self.scalefactor = 1.3
+                
             if self.cam == 'Zeiss AxioCam':
                 self.frame = (self.frame/65536).astype('uint8')
                 self.scalefactor = 1.1
+                
             if self.cam == 'Cool Snap Dyno':
                 self.frame = (self.frame/256).astype('uint8')
                 self.scalefactor = 2.4
@@ -102,8 +98,7 @@ class vidcontrols(QThread):
                     self.points.makePoints(self.height,self.width)
 
 
-            #Look to see if correlation tip tracking on, track if it is
-
+            #Look to see if line/point is drawn, show if it is
             try:
                 if self.hideshapecommand == False:
                     cv2.circle(self.frame, (self.self.pixelclicked.x(), self.self.pixelclicked.y()), 1, 255, -1)
@@ -113,7 +108,6 @@ class vidcontrols(QThread):
             
             try: #draws position clicked
                 cv2.circle(self.frame,(int(self.scalefactor*self.pixelclicked.x()),int(self.scalefactor*self.pixelclicked.y())), 3,255, -1)
-
             except:
                 s = 1
 
@@ -121,9 +115,10 @@ class vidcontrols(QThread):
             	try:#Look to see if edge coordinates exist, display them if they do, otherwise display vid
             		cv2.polylines(self.frame, [self.edgearray], False, (255,255,255),1)
             	except:
-            		s=1
-            		
-            if self.startcap == 1: #video capture settings
+                    s = 1
+
+            #video display
+            if self.startcap == 1:
                 self.out.write(self.frame)
                 if self.endcap == 1:
                     self.out.release()
@@ -156,15 +151,7 @@ class vidcontrols(QThread):
         #hides the shapes from image when trajectory is in progress as triggered in runalongedgetrajectory
         self.hideshapecommand = True
 
-    #------------------------ Edge/Tip detection functions----------------------------------
-    def selecttip_corr(self):
-        self.tiptrack = corr(self.frame)
-        self.tiptrack.GUItoSelect()
-        try:
-            (xmin, ymin, xmax, ymax) = self.tiptrack.selection
-        except:
-            print('Error in dlib tracking function')
-
+    #------------------------ Edge/Tip functions---------------------------------
     def drawinwindow(self):
         #puts image frame in GUI
         self.image = QImage(self.frame, self.frame.shape[1], self.frame.shape[0], self.frame.strides[0], QImage.Format_Indexed8)
@@ -177,43 +164,6 @@ class vidcontrols(QThread):
         #draws coordinates output from tipdetector
         self.tipx = tipx
         self.tipy = tipy
-
-    #---------------------- Video Capture Functions ------------------------------------------
-    def startcapture(self):
-        #get working directory
-        date = time.strftime("%d_%m_%Y")
-        timename = "time_" + time.strftime("%H_%M_%S")
-        dir1 = os.getcwd()
-
-        try:
-            os.mkdir('Video Data')
-        except:
-            print('dirmade')
-        
-        os.chdir('Video Data')
-
-        try:
-            os.getcwd()
-            os.mkdir(date)
-        except:
-            print('directory = ' + str(date))
-            
-        #make outputfile
-        self.images_list =[]
-        self.fourcc = cv2.VideoWriter_fourcc('M','S','V','C')
-        os.chdir(date)
-        self.outputfile= str(timename) + '.avi'
-        self.out = cv2.VideoWriter(self.outputfile, -1, 12, (self.height,self.width))
-        os.chdir(dir1)
-        
-        self.streamtranslate()
-        self.vidstatus = "Video Capture Started"
-        self.startcap = 1
-        self.endcap = 0
-
-    def endcapture(self):
-        self.endcap = 1
-        self.vidstatus = "Video Capture Ended; file written to   " + self.outputfile
     
 
 
