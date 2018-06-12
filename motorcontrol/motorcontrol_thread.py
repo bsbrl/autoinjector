@@ -110,7 +110,10 @@ class motorcontroller(QThread):
 
     def finalpullout(self, dist, zdist):
         current_pos = self.devs[2].get_pos()
-        print("current pos =" + str(current_pos))
+        while len(current_pos) < 3:
+            current_pos = self.devs[2].get_pos()
+            time.sleep(0.01)      
+            print("current pos =" + str(current_pos))
 
         if len(current_pos) == 3:
             xaxis = 0
