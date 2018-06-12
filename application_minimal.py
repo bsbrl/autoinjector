@@ -26,22 +26,35 @@ class ControlWindow(QWidget):
     Calling this class will initiate all functions and also present user with GUI (hence bioler plate at bottom of file)
     """
 
-    def __init__(self,cam,brand,val,bins,rot,bits,restest):
+    def __init__(self,cam,brand,val,bins,rot,bits,restest,com):
         QWidget.__init__(self)
         QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
         self.error_msg = QMessageBox()
         self.error_msg.setIcon(QMessageBox.Critical)
         self.error_msg.setWindowTitle("Error")
 
-        #initiates thread to poll position of motors
+        # initiate thread to poll position of motors and report error if they are not found
         try:
             self.getposition = motorpositionThread()
             self.getposition.start()
             self.getposition.motorpos.connect(self.showmotorposition)
+            self.motorfound = True
         except:
-            self.error_msg.setText("Manipulator error, make sure manipulator is connected, and on. Restart application.")
+            self.error_msg.setText("Manipulators not detected. Wait 2 minutes then relaunch the app. If this does not work, replug manipulators into computer.")
             self.error_msg.exec_()
-            print("motor not plugged in")
+            print("Manipulators not detected")
+            self.motorfound = False
+
+        # open arduino port and report error if it is not found
+        global arduino
+        try:
+            arduino = serial.Serial(str(com), 9600,timeout=5)
+            self.arduinofound = True
+            self.com = com
+        except:
+            self.error_msg.setText("Arduino not detected, make sure you selected the correct com port, plug in and try again.")
+            self.error_msg.exec_()
+            self.arduinofound = False
 
         #initiate video stream thread using camera settings
         self.camname = cam
@@ -315,22 +328,14 @@ class ControlWindow(QWidget):
         self.mastergrid.addWidget(groupbox_response_monitorgrid, 2,0,1,4)
         self.mastergrid.setContentsMargins(5, 5, 5, 5)
 
-        global arduino
+        #print errors on response monitor if manipulator or arduino has an error
+        if self.motorfound == False:
+            self.response_monitor_window.append(">> Manipulators not detected. Wait 2 minutes then relaunch the app. If this does not work, replug manipulators into computer.")
 
-        try:
-            for i in range(1,10):
-                com = 'com' +str(i)
-                print com
-
-                try:
-                    arduino = serial.Serial(com, 9600,timeout=5)
-                    break
-                except:
-                    print('no com')
-        except:
-            self.error_msg.setText("Arduino not detected, plug in and try again")
-            self.error_msg.exec_()
-            self.response_monitor_window.append(">> Arduino not detected, plug in and try again")
+        if self.arduinofound == False:
+            self.response_monitor_window.append(">> Arduino not detected, make sure you selected the correct com port, plug in and try again")
+        else:
+            self.response_monitor_window.append(">> Arduino connected on port " + str(self.com))
 
     def setpipetteangle(self):
         self.pipette_angle = self.motorcalib_window_pipetteangle.text()

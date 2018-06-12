@@ -52,7 +52,6 @@ class camerasetting(QWidget):
 		rotate.addItem("180")
 		rotate.addItem("270")
 		rotate.activated[str].connect(self.updaterotate)
-
 		self.layout2.addWidget(devicenamelabel, 0,0,1,1)
 		self.layout2.addWidget(brandlabel, 1,0,1,1)
 		self.layout2.addWidget(devicevaluelabel, 2,0,1,1)
@@ -75,20 +74,39 @@ class camerasetting(QWidget):
 		restest.addItem("On")
 		restest.addItem("Off")
 		restest.activated[str].connect(self.updaterestest)
-
 		self.layout3.addWidget(restestlabel)
 		self.layout3.addWidget(restest)
 		groupboxlayout3 = QGroupBox('Resolution Test')
 		groupboxlayout3.setLayout(self.layout3)
 
+		self.layout4 = QHBoxLayout()
+		comlabel = QLabel("Arduino Com Port")
+		com = QComboBox(self)
+		com.addItem("com1")
+		com.addItem("com2")
+		com.addItem("com3")
+		com.addItem("com4")
+		com.addItem("com5")
+		com.addItem("com6")
+		com.addItem("com7")
+		com.addItem("com8")
+		com.addItem("com9")
+		com.addItem("com10")
+		com.addItem("com11")
+		com.activated[str].connect(self.updatecom)
+		self.layout4.addWidget(comlabel)
+		self.layout4.addWidget(com)
+		groupboxlayout4 = QGroupBox('Arduino Com Port Selection')
+		groupboxlayout4.setLayout(self.layout4)
 
 		QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
 		mainlayout = QVBoxLayout()
 		saveexitbutton = QPushButton("Save and Exit")
 		saveexitbutton.clicked.connect(self.close1)
 		mainlayout.addWidget(groupboxlayout1)
-		mainlayout.addWidget(groupboxlayout2)
+		mainlayout.addWidget(groupboxlayout4)
 		mainlayout.addWidget(groupboxlayout3)
+		mainlayout.addWidget(groupboxlayout2)
 		mainlayout.addWidget(saveexitbutton)
 		self.setWindowTitle('Settings')
 		self.setGeometry(550,200,250,100)
@@ -147,9 +165,12 @@ class camerasetting(QWidget):
 	def updaterestest(self,text):
 		self.restest = text
 
+	def updatecom(self,text):
+		self.com = text
+
 	def close1(self):
 		self.close()
-		x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.bits, self.restest)
+		x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.bits, self.restest,self.com)
 		x.show()
 
 
