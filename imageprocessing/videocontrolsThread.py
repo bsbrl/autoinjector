@@ -16,14 +16,15 @@ os.environ['PATH'] = MM_PATH + ';' + os.environ['PATH']
 class vidcontrols(QThread):
     #vidout = pyqtSignal()
 
-    def __init__(self,cam,brand,val,bins,rot,bits,restest):
+    def __init__(self,cam,brand,val,bins,rot,imagevals,scalefactor,restest):
         #defines camera settings
         self.cam = cam
         self.brand = brand
         self.val = val
         self.bins = bins
         self.rot = int(rot)
-        self.bits = int(bits)
+        self.imagevals = imagevals
+        self.scalefactor = scalefactor
         self.restest = restest
 
         
@@ -66,17 +67,18 @@ class vidcontrols(QThread):
         if self.cap.getRemainingImageCount() > 0:
             self.frame = self.cap.getLastImage()
 
-            if self.cam == 'HamamatsuHam_DCAM': #convert to 8bit
-                self.frame = (self.frame/256).astype('uint8')
-                self.scalefactor = 1.3
+
+            self.frame = (self.frame/self.imagevals).astype('uint8')
                 
+            """
             if self.cam == 'Zeiss AxioCam':
-                self.frame = (self.frame/65536).astype('uint8')
+                self.frame = (self.frame/self.imagevals).astype('uint8')
                 self.scalefactor = 1.1
                 
             if self.cam == 'Cool Snap Dyno':
                 self.frame = (self.frame/256).astype('uint8')
                 self.scalefactor = 2.4
+            """
 
             if self.rot > 0: #rotate 
                 rows,cols = self.frame.shape 

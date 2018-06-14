@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
 from application_minimal import ControlWindow
+import numpy as np
 
 class camerasetting(QWidget):
 	def __init__(self):
@@ -115,13 +116,16 @@ class camerasetting(QWidget):
 		self.show()
 
 	def updatecamera(self,text):
+
 		if text == 'PVCam':
 			self.devicename = 'Cool Snap Dyno'
 			self.brand = 'PVCAM'
 			self.devicevalue = 'Camera-1'
 			self.bins = "none"
 			self.rotate = 180
-			self.bits = 16                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			bits = 8  
+			self.fourtyxmagcalibdist = 40000 
+			self.scalefactor = 2.4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 
 
 		if text == 'Hamamatsu Orca DCAM':
@@ -130,7 +134,9 @@ class camerasetting(QWidget):
 			self.devicevalue = 'HamamatsuHam_DCAM'
 			self.bins = "2x2"
 			self.rotate = 270
-			self.bits = 16
+			bits = 8
+			self.fourtyxmagcalibdist = 40000 
+			self.scalefactor = 1.3
 
 
 		if text == "Tis Cam":
@@ -139,7 +145,9 @@ class camerasetting(QWidget):
 			self.devicevalue = 'TIS_DCAM'
 			self.bins = "none";
 			self.rotate = 270
-			self.bits = 8
+			bits = 8
+			self.fourtyxmagcalibdist = 20000 
+			self.scalefactor = 1.5   
 
 
 		if text == 'Zeiss Axiocam':
@@ -148,8 +156,11 @@ class camerasetting(QWidget):
 			self.devicevalue = 'Zeiss AxioCam'
 			self.bins = "none"
 			self.rotate = 270
-			self.bits = 16                   
+			bits = 16
+			self.fourtyxmagcalibdist = 20000 
+			self.scalefactor = 1.5   
 
+		self.imagevals = np.power(2, bits)
 
 	def updatebits(self,text):
 		self.bits = int(text)
@@ -171,7 +182,7 @@ class camerasetting(QWidget):
 
 	def close1(self):
 		self.close()
-		x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.bits, self.restest,self.com)
+		x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.imagevals, self.scalefactor, self.restest,self.com, self.fourtyxmagcalibdist)
 		x.show()
 
 

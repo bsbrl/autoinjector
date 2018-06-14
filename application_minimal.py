@@ -26,12 +26,13 @@ class ControlWindow(QWidget):
     Calling this class will initiate all functions and also present user with GUI (hence bioler plate at bottom of file)
     """
 
-    def __init__(self,cam,brand,val,bins,rot,bits,restest,com):
+    def __init__(self,cam,brand,val,bins,rot,imagevals,scale,restest,com,fourtyxcalibdist):
         QWidget.__init__(self)
         QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
         self.error_msg = QMessageBox()
         self.error_msg.setIcon(QMessageBox.Critical)
         self.error_msg.setWindowTitle("Error")
+        self.fourtyxmag = fourtyxcalibdist #distance manipulators move for calibration based on camera FOV and mag
 
         # initiate thread to poll position of motors and report error if they are not found
         try:
@@ -57,8 +58,7 @@ class ControlWindow(QWidget):
             self.arduinofound = False
 
         #initiate video stream thread using camera settings
-        self.camname = cam
-        self.vidctrl = vc(cam,brand,val,bins,rot,bits,restest)
+        self.vidctrl = vc(cam,brand,val,bins,rot,imagevals,scale,restest)
         self.vidctrl.start()
         self.file_selected = 0
         self.restest = restest
@@ -354,42 +354,16 @@ class ControlWindow(QWidget):
       item, ok = QInputDialog.getItem(self, "Select Magnification", 
          "Select Magnification (Assuming 10x objective lens)", items, 0, False)
       self.response_monitor_window.append(">> Magnification set to " +str(item))
-      print(self.camname)
-      if self.camname == 'Zeis AxioCam':
-          print('ugh')
-                
-      if self.camname == 'HamamatsuHam_DCAM':
-          if ok and item:
-             if item == "4x":
-                self.motorcalibdist = 400000
-             elif item == "10x":
-                self.motorcalibdist = 160000
-             elif item == "20x":
-                self.motorcalibdist = 80000
-             elif item == "40x":
-                self.motorcalibdist = 40000
-          
-      if self.camname == 'Zeiss AxioCam':
-          if ok and item:
-             if item == "4x":
-                self.motorcalibdist = 200000
-             elif item == "10x":
-                self.motorcalibdist = 80000
-             elif item == "20x":
-                self.motorcalibdist = 40000
-             elif item == "40x":
-                self.motorcalibdist = 20000
 
-      if self.camname == 'Cool Snap Dyno':
-          if ok and item:
-             if item == "4x":
-                self.motorcalibdist = 400000
-             elif item == "10x":
-                self.motorcalibdist = 320000
-             elif item == "20x":
-                self.motorcalibdist = 320000
-             elif item == "40x":
-                self.motorcalibdist = 40000
+      if ok and item:
+         if item == "4x":
+            self.motorcalibdist = self.fourtyxmag*10
+         elif item == "10x":
+            self.motorcalibdist = self.fourtyxmag*4
+         elif item == "20x":
+            self.motorcalibdist = self.fourtyxmag*2
+         elif item == "40x":
+            self.motorcalibdist = self.fourtyxmag
 
     def showdialog(self):
         #calibrates motors 
