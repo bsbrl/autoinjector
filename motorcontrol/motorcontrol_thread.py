@@ -84,29 +84,22 @@ class motorcontroller(QThread):
         positiony[1] += self.stepsizey
         self.devs[2].goto_pos(positiony, self.speed)
         print("move in y pos = " + str(positiony))
-        time.sleep(0.01)
-        self.waitforit('y manipulator busy')
+        time.sleep(0.5)
 
         #correct for Zdrift if applicable
         positionzdrift = positiony[:]
         positionzdrift[2] += self.zdrift
         self.devs[2].goto_pos(positionzdrift, self.speed)
         print("z drift position = " + str(positionzdrift))
-        time.sleep(0.02)
-        self.waitforit('z manipulator busy')
+        time.sleep(0.5)
 
         #go to edge of tissue
         positionedge = positionzdrift[:]
         positionedge[xaxis] += self.approachdist
         self.devs[2].goto_pos(positionedge, self.speed)
-        time.sleep(0.02)
-        self.waitforit('go close to edge busy')
+        time.sleep(0.5)
         print("final position = " + str(positionedge))
                 
-    def waitforit(self,msg):
-        while self.devs[2].is_busy():
-            time.sleep(0.01)
-            print(msg)
 
     def finalpullout(self, dist, zdist):
         current_pos = self.devs[2].get_pos()
