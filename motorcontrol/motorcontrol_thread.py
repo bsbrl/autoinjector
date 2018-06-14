@@ -61,7 +61,7 @@ class motorcontroller(QThread):
         position2[xaxis] += (self.stepsizex)
         self.devs[2].goto_pos(position2, self.speed)
         print("edge of tissue" + str(position2))
-        time.sleep(0.5)
+        time.sleep(0.25)
 
         #go into tissue and inject
         pos2 = position2
@@ -70,34 +70,34 @@ class motorcontroller(QThread):
         self.devs[2].goto_pos(position3, self.speed)
         print("injection depth =" +str(self.injectiondepth))
         print("injection site" + str(position3))
-        time.sleep(0.5)
+        time.sleep(0.25)
 
         #pull out of tissue
         posfinalout = position3[:]
         posfinalout[xaxis]-= (self.injectiondepth+self.approachdist)
         self.devs[2].goto_pos(posfinalout, self.speed)
         print("pull out tissue position = " + str(posfinalout))
-        time.sleep(0.5)
+        time.sleep(0.25)
         
         #step along tissue in y direction
         positiony = posfinalout[:]
         positiony[1] += self.stepsizey
         self.devs[2].goto_pos(positiony, self.speed)
         print("move in y pos = " + str(positiony))
-        time.sleep(0.5)
+        time.sleep(0.25)
 
         #correct for Zdrift if applicable
         positionzdrift = positiony[:]
         positionzdrift[2] += self.zdrift
         self.devs[2].goto_pos(positionzdrift, self.speed)
         print("z drift position = " + str(positionzdrift))
-        time.sleep(0.5)
+        time.sleep(0.25)
 
         #go to edge of tissue
         positionedge = positionzdrift[:]
         positionedge[xaxis] += self.approachdist
         self.devs[2].goto_pos(positionedge, self.speed)
-        time.sleep(0.5)
+        time.sleep(0.25)
         print("final position = " + str(positionedge))
                 
 
