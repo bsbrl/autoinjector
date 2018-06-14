@@ -69,16 +69,6 @@ class vidcontrols(QThread):
 
 
             self.frame = (self.frame/self.imagevals).astype('uint8')
-                
-            """
-            if self.cam == 'Zeiss AxioCam':
-                self.frame = (self.frame/self.imagevals).astype('uint8')
-                self.scalefactor = 1.1
-                
-            if self.cam == 'Cool Snap Dyno':
-                self.frame = (self.frame/256).astype('uint8')
-                self.scalefactor = 2.4
-            """
 
             if self.rot > 0: #rotate 
                 rows,cols = self.frame.shape 

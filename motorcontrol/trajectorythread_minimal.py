@@ -112,7 +112,7 @@ class trajectoryimplementor(QThread):
 
         #pull out last injection command...
         print('pull out start')
-        dist = 100000
+        dist = 400000
         pulloutlastpos = self.motorcalib3.finalpullout(dist, int(dist*self.thetaz))
         print('pulloutend')
 

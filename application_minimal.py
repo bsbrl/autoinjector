@@ -125,13 +125,13 @@ class ControlWindow(QWidget):
         groupbox_misc = QGroupBox('Display Drawn Edge')
         groupbox_misc.setLayout(misc)
         
-        #Trajectory planning
+        #automated injection controls
         # -*- coding: utf-8 -*-
         self.mu = u"µ"
         self.trajectoryplan = QVBoxLayout()
-        self.trajectoryplan_labelaproachdist = QLabel("Approach Distance ("+  self.mu +"m)  ")
+        self.trajectoryplan_labelaproachdist = QLabel("Approach Distance ("+  self.mu +"m)   ")
         self.trajectoryplan_labeldepth = QLabel("Depth ("+  self.mu +"m)                      ")
-        self.trajectoryplan_labelspace = QLabel("Spacing ("+  self.mu +"m)                  ")
+        self.trajectoryplan_labelspace = QLabel("Spacing ("+  self.mu +"m)                   ")
         self.trajectoryplan_labelspeed = QLabel("Speed (%)                       ")
         self.trajectoryplan_approach = QLineEdit(self)
         self.trajectoryplan_injectiondepth= QLineEdit(self)
@@ -144,8 +144,7 @@ class ControlWindow(QWidget):
         approach = QHBoxLayout()
         depth = QHBoxLayout()
         space = QHBoxLayout()
-        speed = QHBoxLayout()
-
+        speed = QHBoxLayout()       
         approach.addWidget(self.trajectoryplan_labelaproachdist)
         approach.addWidget(self.trajectoryplan_approach)
         depth.addWidget(self.trajectoryplan_labeldepth)
@@ -158,11 +157,6 @@ class ControlWindow(QWidget):
         self.trajectoryplan.addLayout(depth)
         self.trajectoryplan.addLayout(space)
         self.trajectoryplan.addLayout(speed)
-        groubox_trajectory = QGroupBox('Automated Microinjection Controls')
-        groubox_trajectory.setLayout(self.trajectoryplan)
-
-        #automated pressure controls
-        #pressure slider
         self.sl = QSlider(Qt.Horizontal)
         self.sl.setMinimum(10)
         self.sl.setMaximum(255)
@@ -174,7 +168,7 @@ class ControlWindow(QWidget):
         self.automatedcontrol_window_right = QVBoxLayout()
         self.automatedcontrol_window_controls = QHBoxLayout()
         self.automatedcontrol_window_controls_merged = QVBoxLayout()
-        compensatpresslabel = QLabel("Compensation Pressure")
+        compensatpresslabel = QLabel("Pressure")
         self.compensatpres = QLineEdit(self)
         self.automatedcontrol_window_setvalues = QPushButton("Set Values")
         self.automatedcontrol_window_setvalues.clicked.connect(self.setautomatedparameters)
@@ -189,10 +183,11 @@ class ControlWindow(QWidget):
         self.automatedcontrol_window_bottomwindow.addWidget(self.trajectoryplan_runbutton)
         self.automatedcontrol_window_bottomwindow.addWidget(self.trajectoryplan_stopbutton)
         self.automatedcontrol_window_controls_merged.addLayout(self.automatedcontrol_window_bottomwindow)
-        groupbox_automatedcontrol_window = QGroupBox('Injection Controls')
-        groupbox_automatedcontrol_window.setLayout(self.automatedcontrol_window_controls_merged)
+        self.trajectoryplan.addLayout(self.automatedcontrol_window_controls_merged)
+        groubox_trajectory = QGroupBox('Automated Microinjection Controls')
+        groubox_trajectory.setLayout(self.trajectoryplan)
 
-        #Motor Status 
+        #Manipulator Status 
         # -*- coding: utf-8 -*-
         self.mu = u"µ"
         self.motorchangeincrementtext = QLabel("Increment (" + self.mu + "m)    ")
@@ -307,7 +302,7 @@ class ControlWindow(QWidget):
         self.rightside=QVBoxLayout()
         self.rightside.addWidget(groupbox_motorpanel_window)
         self.rightside.addWidget(groubox_trajectory)
-        self.rightside.addWidget(groupbox_automatedcontrol_window)
+        #self.rightside.addWidget(groupbox_automatedcontrol_window)
         self.rightside.addStretch()
 
         #Main window details...
@@ -623,4 +618,4 @@ class ControlWindow(QWidget):
         close_pressure.start()
         time.sleep(0.5)
         self.close()
-        sip.destroyonexit(True)
+        #sip.destroyonexit(True)
