@@ -103,15 +103,24 @@ class motorcontroller(QThread):
 
     def finalpullout(self, dist, zdist):
         current_pos = self.devs[2].get_pos()
+
+        #in some cases, sensapex does not report a correct xyz pos, thus we wait
         while len(current_pos) < 3:
             current_pos = self.devs[2].get_pos()
             time.sleep(0.01)      
             print("current pos =" + str(current_pos))
 
+        #gets xaxis if 3 vs 4 axis manipulator
         if len(current_pos) == 3:
             xaxis = 0
         elif len(current_pos) == 4:
             xaxis = 3
+
+        #in some cases, sensapex says xaxis = 2, but this is just a bug so we wait
+        while current_pos[xaxis] == 2:
+            current_pos = self.devs[2].get_pos()
+            time.sleep(0.01)
+            print("error, new current pos =" + str(current_pos))
 
         end_pos = current_pos[:]
         end_pos[xaxis] -= dist
