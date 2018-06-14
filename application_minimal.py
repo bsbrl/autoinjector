@@ -645,5 +645,8 @@ class ControlWindow(QWidget):
             self.error_msg.exec_()
 
     def closeEvent(self, event):
+        close_pressure = injection(arduino,0, 0,0,0,'bp')
+        close_pressure.start()
+        time.sleep(0.5)
         self.close()
         sip.destroyonexit(True)
