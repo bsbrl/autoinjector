@@ -120,9 +120,19 @@ class ControlWindow(QWidget):
         misc_hideshape.clicked.connect(self.vidctrl.hideshapes)
         misc_showshape = QPushButton("Show Edge")
         misc_showshape.clicked.connect(self.vidctrl.showshapes)
+        exposurelabel = QLabel("Camera Exposure")
+        self.exposureslider = QSlider(Qt.Horizontal)
+        self.exposureslider.setMinimum(10)
+        self.exposureslider.setMaximum(55)
+        self.exposureslider.setValue(15)
+        self.exposureslider.setTickPosition(QSlider.TicksBelow)
+        self.exposureslider.setTickInterval(5)
+        self.exposureslider.valueChanged.connect(self.exposurevaluechange)
+        misc.addWidget(exposurelabel)
+        misc.addWidget(self.exposureslider)
         misc.addWidget(misc_showshape)
         misc.addWidget(misc_hideshape)
-        groupbox_misc = QGroupBox('Display Drawn Edge')
+        groupbox_misc = QGroupBox('Display Settings')
         groupbox_misc.setLayout(misc)
         
         #automated injection controls
@@ -326,17 +336,6 @@ class ControlWindow(QWidget):
             groupbox_restest.setLayout(restestlayout)
             self.leftside.addWidget(groupbox_restest)
 
-            """
-            self.leftside.addWidget(self.overrideymotortheta)
-            self.leftside.addWidget(self.overridepixelsize)
-            self.leftside.addWidget(go_to_point)
-            self.leftside.addWidget(go_to_point_override)
-            self.leftside.addWidget(get_current_pos)
-            self.leftside.addWidget(calculate_error)
-            self.leftside.addWidget(addpoint)
-            self.leftside.addWidget(subpoint)
-            self.leftside.addWidget(go_to_centerpoint)
-            """
 
         self.leftside.addStretch()
         self.rightside=QVBoxLayout()
@@ -373,8 +372,6 @@ class ControlWindow(QWidget):
             self.response_monitor_window.append(">> Camera detected and working.")
 
     def setpipetteangle(self):
-        self.vidctrl.changeexposure(15)
-        print("exposure changed")
         self.pipette_angle = self.motorcalib_window_pipetteangle.text()
         self.pipette_angle = float(self.pipette_angle)
         self.thetaz = np.deg2rad(self.pipette_angle)
@@ -384,6 +381,11 @@ class ControlWindow(QWidget):
         self.pressureslidervalue= self.sl.value()
         self.displaypressure = int(self.pressureslidervalue/2.55)
         self.compensatpres.setText('         '+str(self.displaypressure)+'%')
+
+    def exposurevaluechange(self):
+        self.exposureslidervalue = self.exposureslider.value()
+        self.displayexposure = int(self.exposureslidervalue)
+        self.vidctrl.changeexposure(self.displayexposure)
 
     def updateoverride(self,text):
         self.overrideon = str(text)

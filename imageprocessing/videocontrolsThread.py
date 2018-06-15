@@ -26,6 +26,7 @@ class vidcontrols(QThread):
         self.imagevals = imagevals
         self.scalefactor = scalefactor
         self.restest = restest
+        self.exposure = 15
 
         #error message box
         self.error_msg = QMessageBox()
@@ -36,8 +37,7 @@ class vidcontrols(QThread):
         QThread.__init__(self)
         self.image_analysis_window = QLabel() #creates place to put stream of vid
         self.CAMsetup() #set up camera
-        self.refreshbutton = QPushButton("Refresh Video")
-        self.streamtranslate() #stream video
+
         self.keeptracking = False #initialize variable for later
         self.vidnum = 0 #count number of recordings
         self.gotopos = False
@@ -60,7 +60,7 @@ class vidcontrols(QThread):
             self.endcap = 0
             self.calib = 0
             self.camerafound = True
-            self.exposure = 30
+            self.streamtranslate() #stream video
             
         except:
             self.error_msg.setText("Camera not detected yet, close window and try again")
@@ -70,16 +70,13 @@ class vidcontrols(QThread):
 
     def changeexposure(self,value):
         self.exposure = int(value)
+        print("self exposure =" + str(self.exposure))
 
-    def getexposure(self):
-        self.expose = self.exposure
-        
     def streamtranslate(self):
         #this function controls the streaming video
         
         #check exposure value
-        self.getexposure()
-        self.cap.setProperty(self.cam, 'Exposure', self.expose)
+        self.cap.setProperty(self.cam, 'Exposure', self.exposure)
 
         #if video is streaming
         if self.cap.getRemainingImageCount() > 0:
