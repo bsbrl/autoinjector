@@ -123,23 +123,29 @@ class camerasetting(QWidget):
 		self.com = text
 
 	def close1(self):
-
-		if self.custom == True:
-			self.devicename = self.customvals.devicename
-			self.brand = self.customvals.brand
-			self.devicevalue = self.customvals.devicevalue
-			self.bins = self.customvals.bins
-			self.rotate = int(self.customvals.rotate)
-			bits = int(self.customvals.bits)
-			self.imagevals = np.power(2, bits)
-			self.scalefactor = float(self.customvals.scalefactor)
-			self.fourtyxmagcalibdist = int(self.customvals.fourtyxmagcalib)
-
-		self.close()
-		x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.imagevals, self.scalefactor, self.restest,self.com, self.fourtyxmagcalibdist)
-		x.show()
-		print(self.devicename +","+ self.brand + ","+self.devicevalue + ","+self.bins + ","+str(self.rotate) +","+ str(self.imagevals) +","+ str(self.scalefactor) + ","+str(self.fourtyxmagcalibdist))
-
+		try:
+			if self.custom == True:
+				self.devicename = self.customvals.devicename
+				self.brand = self.customvals.brand
+				self.devicevalue = self.customvals.devicevalue
+				self.bins = self.customvals.bins
+				self.rotate = int(self.customvals.rotate)
+				bits = int(self.customvals.bits)
+				self.imagevals = np.power(2, bits)
+				self.scalefactor = float(self.customvals.scalefactor)
+				self.fourtyxmagcalibdist = int(self.customvals.fourtyxmagcalib)
+			self.close()
+			x = ControlWindow(self.devicename,self.brand,self.devicevalue,self.bins,self.rotate,self.imagevals, self.scalefactor, self.restest,self.com, self.fourtyxmagcalibdist)
+			x.show()
+			print(self.devicename +","+ self.brand + ","+self.devicevalue + ","+self.bins + ","+str(self.rotate) +","+ str(self.imagevals) +","+ str(self.scalefactor) + ","+str(self.fourtyxmagcalibdist))
+			
+		except:
+			error_msg = QMessageBox()
+			error_msg.setIcon(QMessageBox.Critical)
+			error_msg.setWindowTitle("Error")
+			error_msg.setText("All options were not selected. Please choose all options and try again. \n Python error = \n" + str(sys.exc_info()[1]))
+			error_msg.exec_()
+		
 
 class CustomCam(QWidget):
 	def __init__(self):
@@ -148,7 +154,6 @@ class CustomCam(QWidget):
 		self.showbox()
 
 	def showbox(self):
-
 		self.layout2 = QGridLayout()
 		devicenamelabel = QLabel("Device Name")
 		brandlabel = QLabel("Brand")

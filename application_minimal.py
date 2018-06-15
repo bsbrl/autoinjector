@@ -84,9 +84,9 @@ class ControlWindow(QWidget):
         #motor calibration controls
         magnification = QPushButton("Magnification")
         magnification.clicked.connect(self.setmag)
-        instruct0 = QLabel("  Step 0  ")
-        instruct1 = QLabel("  Step 1  ")
-        instruct2 = QLabel("Pipette Angle")
+        instruct0 = QLabel("Step 0")
+        instruct1 = QLabel("Step 1")
+        instruct2 = QLabel("Pipette \n Angle")
         motorcalib_window_calibutton = QPushButton("Step 1.1", self)
         motorcalib_window_calibutton.clicked.connect(self.showdialog)
         motorcalib_window_calibutton2 = QPushButton("Step 1.2", self)
@@ -271,23 +271,62 @@ class ControlWindow(QWidget):
 
         if self.restest == "On":
             #resolution test
+            overrideymotorthetalab = QLabel("Theta Value")
+            overridepixelsizelab = QLabel("Microns/Pixel")
+            step1 = QLabel("Step 1")
+            step2 = QLabel("Step 2")
+            step3 = QLabel("Step 3")
+            step4 = QLabel("Step 4")
+            adjustpoint = QLabel("Adjust Point")
             self.overrideymotortheta = QLineEdit()
             self.overridepixelsize = QLineEdit()
             go_to_point = QPushButton("Go to res point")
-            go_to_point_override = QPushButton("Go to res point override")
             get_current_pos = QPushButton("Record point") #records targeted pos
             calculate_error= QPushButton("Calculate Error") #finds dist between current pos and targeted pos and outputs dist
             go_to_centerpoint = QPushButton("Go to center point")
             go_to_point.clicked.connect(self.go_to_point_func)
-            go_to_point_override.clicked.connect(self.go_to_point_func_override)
             get_current_pos.clicked.connect(self.get_current_pos_func)
             calculate_error.clicked.connect(self.calculate_error_func)
             go_to_centerpoint.clicked.connect(self.go_to_centerpoint_func)
-            addpoint = QPushButton("Add point")
+            addpoint = QPushButton("+")
             addpoint.clicked.connect(self.add_restestpoint)
-            subpoint = QPushButton("Sub point")
+            subpoint = QPushButton("-")
             subpoint.clicked.connect(self.sub_restestpoint)
 
+            restestlayout = QGridLayout()
+            restestlayout.addWidget(step1,2,0)
+            restestlayout.addWidget(go_to_point,2,1,1,2)
+            restestlayout.addWidget(step2,3,0)
+            restestlayout.addWidget(get_current_pos,3,1,1,2)
+            restestlayout.addWidget(step3,4,0)
+            restestlayout.addWidget(calculate_error,4,1,1,2)
+            restestlayout.addWidget(step4,5,0)
+            restestlayout.addWidget(go_to_centerpoint,5,1,1,2)
+            restestlayout.addWidget(adjustpoint,6,0)
+            restestlayout.addWidget(addpoint,6,1)
+            restestlayout.addWidget(subpoint,6,2)
+
+            overrideres = QGridLayout()
+            overrideonlab = QLabel("Override?")
+            overrideon = QComboBox(self)
+            overrideon.addItem("No")
+            overrideon.addItem("Yes")
+            overrideon.activated[str].connect(self.updateoverride)
+            overrideres.addWidget(overrideonlab,6,0)
+            overrideres.addWidget(overrideon,6,1,1,2)
+            overrideres.addWidget(overrideymotorthetalab, 7,0)
+            overrideres.addWidget(self.overrideymotortheta, 7,2)
+            overrideres.addWidget(overridepixelsizelab, 8, 0)
+            overrideres.addWidget(self.overridepixelsize,8,2)
+            groubox_override = QGroupBox("Override Calibrated Settings")
+            groubox_override.setLayout(overrideres)
+
+            restestlayout.addWidget(groubox_override,7,0,1,3)
+            groupbox_restest = QGroupBox("Resolution Test")
+            groupbox_restest.setLayout(restestlayout)
+            self.leftside.addWidget(groupbox_restest)
+
+            """
             self.leftside.addWidget(self.overrideymotortheta)
             self.leftside.addWidget(self.overridepixelsize)
             self.leftside.addWidget(go_to_point)
@@ -297,6 +336,7 @@ class ControlWindow(QWidget):
             self.leftside.addWidget(addpoint)
             self.leftside.addWidget(subpoint)
             self.leftside.addWidget(go_to_centerpoint)
+            """
 
         self.leftside.addStretch()
         self.rightside=QVBoxLayout()
@@ -343,6 +383,10 @@ class ControlWindow(QWidget):
         self.displaypressure = int(self.pressureslidervalue/2.55)
         self.compensatpres.setText('         '+str(self.displaypressure)+'%')
 
+    def updateoverride(self,text):
+        self.overrideon = str(text)
+        self.response_monitor_window.append(">> Override calibrated settings for resolution test set to ON.")
+
     """
     ----------Calibration Controls -----------------------------------------------------------------
     These functions control the calibration of the manipulators to the camera axes
@@ -380,8 +424,9 @@ class ControlWindow(QWidget):
             retval = msg.exec_()
 
         except:
-             self.error_msg.setText("Please select magnification in Calibration window.")
+             self.error_msg.setText("Please select magnification in Calibration window. \n Python error = \n" + str(sys.exc_info()[1]))
              self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def motorcalib_step1(self):
         # gets position of tip if tip is selected. commands motors to move only in y direction
@@ -434,16 +479,20 @@ class ControlWindow(QWidget):
             np.set_printoptions(threshold=np.inf)
             print(self.d.drawedgecoord1)
         except:
-            self.error_msg.setText(">> CAM error, is camera plugged in?")
+            self.error_msg.setText("CAM error, is camera plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
             self.error_msg.exec_()
-            self.response_monitor_window.append(">> CAM error, is camera plugged in?")
+            self.response_monitor_window.append(">> Camera error. \n>> Python error = " + str(sys.exc_info()))
         
     """
     ---------- Resolution Test Controls   -----------------------------------------------------------------
     These Functions control testing resolution error
     """
-
     def go_to_point_func(self):
+
+        if self.overrideon == "Yes":
+            self.ymotortheta = float(self.overrideymotortheta.text())
+            self.pixelsize = float(self.overridepixelsize.text())
+
         #get current position of manipulator
         getmotorpos = delmotor('', '', 0, 1000,'getposition_m0',0)
         getmotorpos.start()
@@ -466,34 +515,6 @@ class ControlWindow(QWidget):
         #use generated commands to move from current point to restest point
         move = delmotor('x', 'increase', getpos.futuremotor, 1000,'absolute',0)
         move.start()
-
-    def go_to_point_func_override(self):
-        #rather than using the calibrated ymotor theta and pixel size, these values are input in the gui
-        ymotorthetaoverride = float(self.overrideymotortheta.text())
-        pixelsizeoverride = float(self.overridepixelsize.text())
-
-        getmotorpos = delmotor('', '', 0, 1000,'getposition_m0',0)
-        getmotorpos.start()
-        
-        time.sleep(0.2)
-        print('m0  override = ' + str(getmotorpos.m0))
-        self.m0 = getmotorpos.m0
-        
-        #get position of first point in restest grid
-        c2x = self.vidctrl.points.drawpointsx
-        c2y = self.vidctrl.points.drawpointsy
-        self.c2 = (c2x[self.i],c2y[self.i])
-        
-        #generate commands to go from current point to restest point
-        self.c0 = (self.vidctrl.height/2,self.vidctrl.width/2)
-        getpos = GetPos(self.c0,self.c2,self.m0,1000,ymotorthetaoverride,self.thetaz,pixelsizeoverride)
-        print('m1 instructed override = ' +  str(getpos.futuremotor))
-        self.m1 = getpos.futuremotor
-
-        #use generated commands to move from current point to restest point
-        move = delmotor('x', 'increase', getpos.futuremotor, 1000,'absolute',0)
-        move.start()
-
         
     def get_current_pos_func(self):
         #get c1, get m1
@@ -561,8 +582,9 @@ class ControlWindow(QWidget):
             move = delmotor(axis, direction, dist, speed,'relative',0)
             move.start()
         except:
-             self.error_msg.setText("Please enter an increment and speed in the manipulator window.")
+             self.error_msg.setText("Please enter an increment and speed in the manipulator window. \nPython error = \n" + str(sys.exc_info()[1]))
              self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
 
     """
@@ -585,9 +607,9 @@ class ControlWindow(QWidget):
             self.injector_compensate.start()
 
         except:
-             self.error_msg.setText("Error, did you enter all parameters? Is the arduino plugged in?")
-             self.error_msg.exec_()                
-
+             self.error_msg.setText("Error, did you enter all parameters? Is the arduino plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
         
     def runalongedgetrajectory(self):
         #try:
@@ -615,12 +637,12 @@ class ControlWindow(QWidget):
         try:
             self.trajimplement.stopprocess()
         except:
-            self.error_msg.setText("You have to start the trajectory in order to be able to stop it...")
+            self.error_msg.setText("You have to start the trajectory in order to be able to stop it...\nPython error = \n" + str(sys.exc_info()[1]))
             self.error_msg.exec_()
+            self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def closeEvent(self, event):
         close_pressure = injection(arduino,0, 0,0,0,'bp')
         close_pressure.start()
         time.sleep(0.5)
         self.close()
-        #sip.destroyonexit(True)
