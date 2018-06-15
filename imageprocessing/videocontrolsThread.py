@@ -27,6 +27,10 @@ class vidcontrols(QThread):
         self.scalefactor = scalefactor
         self.restest = restest
 
+        #error message box
+        self.error_msg = QMessageBox()
+        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setWindowTitle("Error")
         
         #initiates stream of video 
         QThread.__init__(self)
@@ -56,8 +60,12 @@ class vidcontrols(QThread):
             self.startcap = 0
             self.endcap = 0
             self.calib = 0
+            self.camerafound = True
             
         except:
+            self.error_msg.setText("Camera not detected yet, close window and try again")
+            self.error_msg.exec_()
+            self.camerafound = False
             self.image_analysis_window.setText('CAMERA ERROR. Verify camera is detected in Device Manager, correct camera settings are applied, and restart program')
 
     def streamtranslate(self):

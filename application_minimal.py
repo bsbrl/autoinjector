@@ -53,7 +53,7 @@ class ControlWindow(QWidget):
             self.arduinofound = True
             self.com = com
         except:
-            self.error_msg.setText("Arduino not detected, make sure you selected the correct com port, plug in and try again.")
+            self.error_msg.setText("Arduino not detected, make sure you selected the correct com port, plug in, and try again.")
             self.error_msg.exec_()
             self.arduinofound = False
 
@@ -302,7 +302,6 @@ class ControlWindow(QWidget):
         self.rightside=QVBoxLayout()
         self.rightside.addWidget(groupbox_motorpanel_window)
         self.rightside.addWidget(groubox_trajectory)
-        #self.rightside.addWidget(groupbox_automatedcontrol_window)
         self.rightside.addStretch()
 
         #Main window details...
@@ -321,11 +320,17 @@ class ControlWindow(QWidget):
         #print errors on response monitor if manipulator or arduino has an error
         if self.motorfound == False:
             self.response_monitor_window.append(">> Manipulators not detected. Wait 2 minutes then relaunch the app. If this does not work, replug manipulators into computer.")
-
-        if self.arduinofound == False:
-            self.response_monitor_window.append(">> Arduino not detected, make sure you selected the correct com port, plug in and try again")
         else:
-            self.response_monitor_window.append(">> Arduino connected on port " + str(self.com))
+            self.response_monitor_window.append(">> Manipulators detected and working.")
+        if self.arduinofound == False:
+            self.response_monitor_window.append(">> Arduino not detected, make sure you selected the correct com port, plug in, and try again")
+        else:
+            self.response_monitor_window.append(">> Arduino connected and working on port " + str(self.com))
+
+        if self.vidctrl.camerafound == False:
+            self.response_monitor_window.append(">> Camera not detected. Wait 2 minutes then relaunch app. Make sure proper camera settings are used, and camera is shown in windows device manager under USB or camera.")
+        else:
+            self.response_monitor_window.append(">> Camera detected and working.")
 
     def setpipetteangle(self):
         self.pipette_angle = self.motorcalib_window_pipetteangle.text()
