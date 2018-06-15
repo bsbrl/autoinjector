@@ -2,7 +2,9 @@ import cv2
 import numpy as np 
 from scipy.interpolate import UnivariateSpline
 import matplotlib.pyplot as plt
-
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+import sys
 
 drawing = False # true if mouse is pressed
 mode = True # if True, draw rectangle. Press 'm' to toggle to curve
@@ -13,6 +15,10 @@ class drawobj(object):
     class include og which is a captured video frame at the instance the user presses "draw tip" in GUI
     """
     def __init__(self,og):
+        self.error_msg = QMessageBox()
+        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setWindowTitle("Error")
+
         #og is image frame fed into function by videocontrols stream
         self.og = og
         self.drawedgecoord=[]
@@ -22,7 +28,6 @@ class drawobj(object):
         cv2.namedWindow('Draw Edge', cv2.WINDOW_AUTOSIZE)
         cv2.setMouseCallback('Draw Edge',self.interactive_drawing)
         cv2.imshow('Draw Edge',og)
-        #cv2.resizeWindow('Draw Edge', 2*og.shape[0], 2*og.shape[1])
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -68,10 +73,16 @@ class drawobj(object):
         print('y')
         print(ynew)
 
-        for i in range(0,len(xnew)-1):
-            print(i)
-            x = int(xnew[i])
-            y = int(ynew[i])
-            self.drawedgecoord1.append([x,y])
-            if i == len(xnew)-2:
-                self.drawedgecoord1 = np.asarray(self.drawedgecoord1)
+        try:
+            for i in range(0,len(xnew)-1):
+                print(i)
+                x = int(xnew[i])
+                y = int(ynew[i])
+                self.drawedgecoord1.append([x,y])
+                if i == len(xnew)-2:
+                    self.drawedgecoord1 = np.asarray(self.drawedgecoord1)
+                cv2.destroyAllWindows()
+        except:
+            self.error_msg.setText("Cannot draw line up then down, it must go in one direction only. Close window and try again. \n Python Error = \n" + str(sys.exc_info()))
+            self.error_msg.exec_()
+            cv2.destroyAllWindows()

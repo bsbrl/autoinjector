@@ -69,6 +69,7 @@ class ControlWindow(QWidget):
         self.injectpressurevoltage = 0
         self.pulseduration = 0
         self.edgedetected = False
+        self.overrideon = 'No'
 
         self.i = 0 #restest point number
     
@@ -433,39 +434,56 @@ class ControlWindow(QWidget):
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def motorcalib_step1(self):
-        # gets position of tip if tip is selected. commands motors to move only in y direction
-        self.tipposition1 = self.vidctrl.tipcircle
-        movey = delmotor('y', 'increase', self.motorcalibdist, 1000,'relative',0)
-        movey.start()
+        try:
+            # gets position of tip if tip is selected. commands motors to move only in y direction
+            self.tipposition1 = self.vidctrl.tipcircle
+            movey = delmotor('y', 'increase', self.motorcalibdist, 1000,'relative',0)
+            movey.start()
+        except:
+             self.error_msg.setText("Please click on the tip first and press step 1.1 calibration again. \n Python error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
             
     def motorcalib_step2(self):
-        self.tipposition2 = self.vidctrl.tipcircle
-        y1 = self.tipposition1.y()
-        y2 = self.tipposition2.y()
-        x1 = self.tipposition1.x()
-        x2 = self.tipposition2.x()
-        ycameraline = abs(y2 - y1)
-        xcameraline = abs(x2 - x1)
-        self.calculatetheta(xcameraline,ycameraline)
-
+        try:
+            self.tipposition2 = self.vidctrl.tipcircle
+            if self.tipposition2 == self.tipposition1:
+                s = l
+            y1 = self.tipposition1.y()
+            y2 = self.tipposition2.y()
+            x1 = self.tipposition1.x()
+            x2 = self.tipposition2.x()
+            ycameraline = abs(y2 - y1)
+            xcameraline = abs(x2 - x1)
+            self.calculatetheta(xcameraline,ycameraline)
+        except:
+             self.error_msg.setText("Please click on the tip now and press step 1.2 calibration again. \n Python error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def calculatetheta(self,xcameraline,ycameraline):
-        #solves for the xy theta offset by drawing two lines parellel to camera axes
-        ymotorline = np.sqrt((np.square(ycameraline) + np.square(xcameraline)))
-        self.ymotortheta = np.arctan(float(xcameraline)/ycameraline)
-        self.ymotorthetadeg =np.rad2deg(self.ymotortheta)
-        print(self.ymotortheta)
-        self.yscale = self.motorcalibdist/ymotorline
+        try:
+            #solves for the xy theta offset by drawing two lines parellel to camera axes
+            ymotorline = np.sqrt((np.square(ycameraline) + np.square(xcameraline)))
+            self.ymotortheta = np.arctan(float(xcameraline)/ycameraline)
+            self.ymotorthetadeg =np.rad2deg(self.ymotortheta)
+            print(self.ymotortheta)
+            self.yscale = self.motorcalibdist/ymotorline
 
-        #calculate total FOV of microscope in micromenters
-        self.videoheightpixel = int(self.vidctrl.frame.shape[0])
-        self.videowidthpixel = int(self.vidctrl.frame.shape[1])
-        self.videoheightdist = (self.videoheightpixel)*(self.yscale/1000)
-        self.videowidthdist = (self.videowidthpixel)*(self.yscale/1000)
-        print("ysclae (nm per pixel" + str(self.yscale))
+            #calculate total FOV of microscope in micromenters
+            self.videoheightpixel = int(self.vidctrl.frame.shape[0])
+            self.videowidthpixel = int(self.vidctrl.frame.shape[1])
+            self.videoheightdist = (self.videoheightpixel)*(self.yscale/1000)
+            self.videowidthdist = (self.videowidthpixel)*(self.yscale/1000)
+            print("ysclae (nm per pixel" + str(self.yscale))
 
-        self.pixelsize = self.yscale/1000
-        print("pixel size = " +str(self.pixelsize))
+            self.pixelsize = self.yscale/1000
+            print("pixel size = " +str(self.pixelsize))
+            
+        except:
+             self.error_msg.setText("Error calculating angle. \n Python error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     """
     ----------Desired Trajectory Control -----------------------------------------------------------------
@@ -473,8 +491,9 @@ class ControlWindow(QWidget):
     """   
 
     def drawedge(self):
-        self.vidctrl.showshapes()
+        
         try:
+            self.vidctrl.showshapes()
             self.d = drawobj(self.vidctrl.frame)
             self.d.drawedgecoord1 = np.asarray(self.d.drawedgecoord1)
             self.vidctrl.edgearraypointer(self.d.drawedgecoord1)
@@ -482,6 +501,7 @@ class ControlWindow(QWidget):
             print(self.d.drawedgecoord1)
             np.set_printoptions(threshold=np.inf)
             print(self.d.drawedgecoord1)
+            
         except:
             self.error_msg.setText("CAM error, is camera plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
             self.error_msg.exec_()
@@ -492,67 +512,95 @@ class ControlWindow(QWidget):
     These Functions control testing resolution error
     """
     def go_to_point_func(self):
+        try:
+            if self.overrideon == "Yes":
+                self.ymotortheta = float(self.overrideymotortheta.text())
+                self.pixelsize = float(self.overridepixelsize.text())
 
-        if self.overrideon == "Yes":
-            self.ymotortheta = float(self.overrideymotortheta.text())
-            self.pixelsize = float(self.overridepixelsize.text())
+            #get current position of manipulator
+            getmotorpos = delmotor('', '', 0, 1000,'getposition_m0',0)
+            getmotorpos.start()
+            
+            time.sleep(0.2)
+            print('m0 = ' + str(getmotorpos.m0))
+            self.m0 = getmotorpos.m0
+            self.stringm0 = str(self.m0)
+            
+            #get position of first point in restest grid
+            c2x = self.vidctrl.points.drawpointsx
+            c2y = self.vidctrl.points.drawpointsy
+            self.c2 = (c2x[self.i],c2y[self.i])
+            
+            #generate commands to go from current point to restest point
+            self.c0 = (self.vidctrl.height/2,self.vidctrl.width/2)
+            getpos = GetPos(self.c0,self.c2,self.m0,1000,self.ymotortheta,self.thetaz,self.pixelsize)
+            print('m1 instructed = ' +  str(getpos.futuremotor))
+            self.m1 = getpos.futuremotor
 
-        #get current position of manipulator
-        getmotorpos = delmotor('', '', 0, 1000,'getposition_m0',0)
-        getmotorpos.start()
-        
-        time.sleep(0.2)
-        print('m0 = ' + str(getmotorpos.m0))
-        self.m0 = getmotorpos.m0
-        
-        #get position of first point in restest grid
-        c2x = self.vidctrl.points.drawpointsx
-        c2y = self.vidctrl.points.drawpointsy
-        self.c2 = (c2x[self.i],c2y[self.i])
-        
-        #generate commands to go from current point to restest point
-        self.c0 = (self.vidctrl.height/2,self.vidctrl.width/2)
-        getpos = GetPos(self.c0,self.c2,self.m0,1000,self.ymotortheta,self.thetaz,self.pixelsize)
-        print('m1 instructed = ' +  str(getpos.futuremotor))
-        self.m1 = getpos.futuremotor
-
-        #use generated commands to move from current point to restest point
-        move = delmotor('x', 'increase', getpos.futuremotor, 1000,'absolute',0)
-        move.start()
+            #use generated commands to move from current point to restest point
+            move = delmotor('x', 'increase', getpos.futuremotor, 1000,'absolute',0)
+            move.start()
+        except:
+             self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
         
     def get_current_pos_func(self):
-        #get c1, get m1
-        getcurrentmotorm1 = delmotor('', '', 0, 1000,'getposition_m1',0)
-        getcurrentmotorm1.start()
-        time.sleep(0.4)
-        self.m1 = getcurrentmotorm1.m1
-        self.c1 = self.vidctrl.positionnow
-        print('m1 real =' + str(self.m1))
+        try:
+            #get c1, get m1
+            getcurrentmotorm1 = delmotor('', '', 0, 1000,'getposition_m1',0)
+            getcurrentmotorm1.start()
+            time.sleep(0.4)
+            self.m1 = getcurrentmotorm1.m1
+            self.c1 = self.vidctrl.positionnow
+            print('m1 real =' + str(self.m1))
+        except:
+             self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def calculate_error_func(self):
-        #move to absolute truth position
-        getcurrentmotorm2 = delmotor('', '', 0, 1000,'getposition_m2',0)
-        getcurrentmotorm2.start()
-        time.sleep(0.4)
-        self.m2 = getcurrentmotorm2.m2
+        try:
+            #move to absolute truth position
+            getcurrentmotorm2 = delmotor('', '', 0, 1000,'getposition_m2',0)
+            getcurrentmotorm2.start()
+            time.sleep(0.4)
+            self.m2 = getcurrentmotorm2.m2
 
-        self.errorx = abs(int(self.m2[0])-int(self.m1[0]))
-        self.errory = abs(int(self.m2[1])-int(self.m1[1]))
-        self.errorz = abs(int(self.m2[2])-int(self.m1[2]))
-        #.errord = abs(int(self.m2[3])-int(self.m1[3]))
+            self.errorx = abs(int(self.m2[0])-int(self.m1[0]))
+            self.errory = abs(int(self.m2[1])-int(self.m1[1]))
+            self.errorz = abs(int(self.m2[2])-int(self.m1[2]))
+            print('m2 = ' + str(self.m2))
+            print('error x,y,z,d in nm = ')
+            print(self.errorx)
+            print(self.errory)
+            print(self.errorz)
 
-        print('m2 = ' + str(self.m2))
-        print('error x,y,z,d in nm = ')
-        print(self.errorx)
-        print(self.errory)
-        print(self.errorz)
-        #print(self.errord)
+            if len(self.m2) == 4:
+                self.errord = abs(int(self.m2[3])-int(self.m1[3]))
+                print(self.errord)
+        except:
+             self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def go_to_centerpoint_func(self):
-        #go back to center point
-        middlepos = [12021610, 3279865, 3644745]
-        move = delmotor('x', 'increase', middlepos, 1000,'absolute',0)
-        move.start()
+        try:
+            #go back to center point
+            s1m0 = self.stringm0.replace(',','')
+            s2m0 = s1m0.replace('[','')
+            s3m0 = s2m0.replace(']','')
+            if len(self.m0) == 3:
+                s4m0 = s3m0.split(' ',2)
+            elif len(self.m0) ==4:
+                s4m0 = s3m0.split(' ',3)            
+            m0 = [int(i) for i in s4m0]
+            move = delmotor('x', 'increase', m0, 1000,'absolute',0)
+            move.start()
+        except:
+             self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def add_restestpoint(self):
         #changes selected point
@@ -571,13 +619,18 @@ class ControlWindow(QWidget):
     """
 
     def showmotorposition(self, motorposition):
-        self.motorposition = motorposition
-        self.registerpositionx = int(self.motorposition[0])/1000
-        self.registerpositiony = int(self.motorposition[1])/1000
-        self.registerpositionz = int(self.motorposition[2])/1000
-        self.motorxposition.setText(str(self.registerpositionx) +  self.mu +"m")
-        self.motoryposition.setText(str(self.registerpositiony) +  self.mu +"m")
-        self.motorzposition.setText(str(self.registerpositionz) +  self.mu +"m")
+        try:
+            self.motorposition = motorposition
+            self.registerpositionx = int(self.motorposition[0])/1000
+            self.registerpositiony = int(self.motorposition[1])/1000
+            self.registerpositionz = int(self.motorposition[2])/1000
+            self.motorxposition.setText(str(self.registerpositionx) +  self.mu +"m")
+            self.motoryposition.setText(str(self.registerpositiony) +  self.mu +"m")
+            self.motorzposition.setText(str(self.registerpositionz) +  self.mu +"m")
+        except:
+             self.error_msg.setText("Manipulator error. \nPython error = \n" + str(sys.exc_info()[1]))
+             self.error_msg.exec_()
+             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def advancemotor(self, axis, direction):
         try:
@@ -616,23 +669,24 @@ class ControlWindow(QWidget):
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
         
     def runalongedgetrajectory(self):
-        #try:
+        try:
             #get values from GUI
-        currentpos = self.vidctrl.positionnow 
-        approach = (int(float(self.approachdist)*1000)) #convert microns to nm
-        depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
-        depthintissue = depth
-        space = int(float(self.trajectoryplan_spacingbtwn.text()))
-        self.speed = (int((self.trajectoryplan_speed.text()))*10)
-        spacing = space
+            currentpos = self.vidctrl.positionnow 
+            approach = (int(float(self.approachdist)*1000)) #convert microns to nm
+            depth = (int(float(self.trajectoryplan_injectiondepth.text()))*1000)
+            depthintissue = depth
+            space = int(float(self.trajectoryplan_spacingbtwn.text()))
+            self.speed = (int((self.trajectoryplan_speed.text()))*10)
+            spacing = space
 
-        self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed)
-        self.trajimplement.start()
-        self.trajimplement.finished.connect(self.updateresponse)
+            self.trajimplement = trajectoryimplementor(self.ymotortheta, self.thetaz, currentpos, self.pixelsize, approach, depthintissue, spacing, self.d.drawedgecoord1, self.ncell, self.speed)
+            self.trajimplement.start()
+            self.trajimplement.finished.connect(self.updateresponse)
 
-        #except:
-        #    self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.")
-        #    self.error_msg.exec_()
+        except:
+            self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.\nPython error = \n" + str(sys.exc_info()[1]))
+            self.error_msg.exec_()
+            self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def updateresponse(self):
         self.response_monitor_window.append(">> Number of injections =" + str(self.trajimplement.statusnumber))
