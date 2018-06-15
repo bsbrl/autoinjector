@@ -373,6 +373,8 @@ class ControlWindow(QWidget):
             self.response_monitor_window.append(">> Camera detected and working.")
 
     def setpipetteangle(self):
+        self.vidctrl.changeexposure(15)
+        print("exposure changed")
         self.pipette_angle = self.motorcalib_window_pipetteangle.text()
         self.pipette_angle = float(self.pipette_angle)
         self.thetaz = np.deg2rad(self.pipette_angle)

@@ -53,7 +53,6 @@ class vidcontrols(QThread):
             if self.bins != "none":
                 self.cap.setProperty(self.cam, "Binning", self.bins)
             self.cap.startContinuousSequenceAcquisition(1)
-
             self.timer = QTimer()
             self.timer.timeout.connect(self.streamtranslate)
             self.timer.start(30)
@@ -61,15 +60,26 @@ class vidcontrols(QThread):
             self.endcap = 0
             self.calib = 0
             self.camerafound = True
+            self.exposure = 30
             
         except:
             self.error_msg.setText("Camera not detected yet, close window and try again")
             self.error_msg.exec_()
             self.camerafound = False
-            self.image_analysis_window.setText('CAMERA ERROR. Verify camera is detected in Device Manager, correct camera settings are applied, and restart program')
+            self.image_analysis_window.setText("CAMERA ERROR. Verify camera is detected in Device Manager, correct camera settings are applied, and restart program. \n Python error = \n" + str(sys.exc_info()[1]))
 
+    def changeexposure(self,value):
+        self.exposure = int(value)
+
+    def getexposure(self):
+        self.expose = self.exposure
+        
     def streamtranslate(self):
-        #this function controls the streaming video 
+        #this function controls the streaming video
+        
+        #check exposure value
+        self.getexposure()
+        self.cap.setProperty(self.cam, 'Exposure', self.expose)
 
         #if video is streaming
         if self.cap.getRemainingImageCount() > 0:
