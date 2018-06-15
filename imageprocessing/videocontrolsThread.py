@@ -26,7 +26,7 @@ class vidcontrols(QThread):
         self.imagevals = imagevals
         self.scalefactor = scalefactor
         self.restest = restest
-        self.exposure = 15
+        self.exposure = 3
 
         #error message box
         self.error_msg = QMessageBox()
@@ -69,7 +69,7 @@ class vidcontrols(QThread):
             self.image_analysis_window.setText("CAMERA ERROR. Verify camera is detected in Device Manager, correct camera settings are applied, and restart program. \n Python error = \n" + str(sys.exc_info()[1]))
 
     def changeexposure(self,value):
-        self.exposure = int(value)
+        self.exposure = float(value)
         print("self exposure =" + str(self.exposure))
 
     def streamtranslate(self):

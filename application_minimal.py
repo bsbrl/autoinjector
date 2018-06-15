@@ -122,11 +122,11 @@ class ControlWindow(QWidget):
         misc_showshape.clicked.connect(self.vidctrl.showshapes)
         exposurelabel = QLabel("Camera Exposure")
         self.exposureslider = QSlider(Qt.Horizontal)
-        self.exposureslider.setMinimum(10)
-        self.exposureslider.setMaximum(55)
-        self.exposureslider.setValue(15)
+        self.exposureslider.setMinimum(4)
+        self.exposureslider.setMaximum(30)
+        self.exposureslider.setValue(8)
         self.exposureslider.setTickPosition(QSlider.TicksBelow)
-        self.exposureslider.setTickInterval(5)
+        self.exposureslider.setTickInterval(0.5)
         self.exposureslider.valueChanged.connect(self.exposurevaluechange)
         misc.addWidget(exposurelabel)
         misc.addWidget(self.exposureslider)
@@ -383,8 +383,8 @@ class ControlWindow(QWidget):
         self.compensatpres.setText('         '+str(self.displaypressure)+'%')
 
     def exposurevaluechange(self):
-        self.exposureslidervalue = self.exposureslider.value()
-        self.displayexposure = int(self.exposureslidervalue)
+        self.exposureslidervalue = self.exposureslider.value()/3.33
+        self.displayexposure = float(self.exposureslidervalue)
         self.vidctrl.changeexposure(self.displayexposure)
 
     def updateoverride(self,text):
@@ -650,3 +650,4 @@ class ControlWindow(QWidget):
         close_pressure.start()
         time.sleep(0.5)
         self.close()
+        destroy
