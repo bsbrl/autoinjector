@@ -94,17 +94,16 @@ Install the following software to operate the Autoinjector. It is recommended to
 			python -m pip install scipy
 			```
 
-		- [PyQt](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html)
-			PyQt4 is the only one which we cannot download with pip. To install it, do the following:
-			1. Download the file "PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl" if you have a 64-bit system, or "PyQt4‑4.11.4‑cp27‑cp27m‑win32.whl" if you have a 32-bit system from [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4) 
+		- [PyQt](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4)
+			1. From [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4), download the file "PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl" if you have a 64-bit system, or "PyQt4‑4.11.4‑cp27‑cp27m‑win32.whl" if you have a 32-bit system.
 			2. Run the command prompt as administrator and navigate to your downloads folder. I.e. 
-			```
-			cd C:\Users\Gabi\Downloads
-			```
+				```
+				cd C:\Users\Gabi\Downloads
+				```
 			3. Type the following code to download pyqt4 (if you have the 32-bit system change the filename to the one from step 1):
-			```
-			python -m pip install PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl
-			```
+				```
+				python -m pip install PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl
+				```
 
 ### 2. Arduino
 1. Download the arduino windows installer [here](https://www.arduino.cc/en/Main/Software?).
