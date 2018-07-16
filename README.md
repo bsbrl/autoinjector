@@ -96,7 +96,7 @@ Install the following software to operate the Autoinjector. It is recommended to
 
 		- [PyQt](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4)
 			1. From [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4), download the file "PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl" if you have a 64-bit system, or "PyQt4‑4.11.4‑cp27‑cp27m‑win32.whl" if you have a 32-bit system.
-			2. Run the command prompt as administrator and navigate to your downloads folder. I.e. 
+			2. Run the command prompt as administrator and navigate to your downloads folder. i.e. 
 				```
 				cd C:\Users\Gabi\Downloads
 				```
@@ -112,6 +112,8 @@ Install the following software to operate the Autoinjector. It is recommended to
 ### 3. Micromanager
 1. Download the micromanager windows installer [here](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release).
 2. Launch the installer and follow installation instructions on screen.
+3. Follow [these instructions](https://stackoverflow.com/questions/3701646/how-to-add-to-the-pythonpath-in-windows) to add the following folder to PYTHONPATH vairable:
+	- Add "C:\Program Files\Micro-Manager-1.4" to PYTHONPATH variable
 
 ### 4. Sensapex SDK
 1. TBD
