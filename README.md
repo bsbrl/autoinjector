@@ -9,6 +9,7 @@ The autoinjector is an automated computer vision guided platform to serially inj
 2. [Install Instructions](https://github.com/ogshull/Autoinjector-/tree/PVCAM#install-instructions)
 3. [Running the Application](https://github.com/ogshull/Autoinjector-/tree/PVCAM#running-the-application)
 4. [License](https://github.com/ogshull/Autoinjector-/tree/PVCAM#license)
+
 It is recommended to start in order. 
 
 ## System requirements 
@@ -26,7 +27,7 @@ A complete list of available cameras can be found at micromanager's device suppo
 ### Software Requirements
 Currently, the autoinjector is only available with Windows support. The following libraries are used in the Autoinjector software (see install instructions for how to install). 
 1. [Python 2.7.12](https://github.com/ogshull/Autoinjector-/tree/PVCAM#1-python)
-	-[Packages](https://github.com/ogshull/Autoinjector-/tree/PVCAM#python-packages)
+	- [Packages](https://github.com/ogshull/Autoinjector-/tree/PVCAM#python-packages)
 		- pip 
 		- Native python libraties
 			- time
@@ -126,8 +127,8 @@ Follow the instructions for your camera driver install. In our work we have used
 ## Running the Application
 ---------
 
- To run the program normally, click the file "launchapp.py" in the Autoinjector folder. This will launch the GUI and report any errors with hardware.
+ To run the program normally, click the file "launchapp.py" in the Autoinjector folder. This will launch the GUI and report any errors with hardware. For additional operating instructions see the user manual included with the publication.
 
 ## License
-
+-------------
 This work is lisenced under the MIT lisence. See LISENCE.txt for additional information.  
