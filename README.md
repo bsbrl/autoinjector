@@ -59,8 +59,11 @@ Install the following software to operate the Autoinjector. It is recommended to
 3. Add Python to system environment path by following [these instructions](https://superuser.com/questions/143119/how-do-i-add-python-to-the-windows-path) so that you can run python from any windows command prompt.
 
 	#### Python Packages
-	1. Pip (python installer package). Follow instructions [here](https://github.com/BurntSushi/nfldb/wiki/Python-&-pip-Windows-installation#pip-install) to download PIP. 
-	2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages:
+	1. Pip (python installer package). 
+		1. Download [get-pip.py](https://bootstrap.pypa.io/get-pip.py) (Right click and click "save as" to download the file).
+		2. Open the file in your downloads folder and click the file, this will download pip. It will not give you any confirmation, a window will pop up and disappear. Pip will have loaded after this is complete. If pip did not load successfully you will see an error in the following steps. 
+
+	2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages):
 		- [Matplotlib](https://matplotlib.org/users/installing.html#windows)
 			```
 			python -m pip install matplotlib
