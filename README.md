@@ -7,12 +7,8 @@ The autoinjector is an automated computer vision guided platform to serially inj
 	- [Hardware Requirements](https://github.com/ogshull/Autoinjector-/tree/PVCAM#hardware-requirements)
 	- [Software Requirements](https://github.com/ogshull/Autoinjector-/tree/PVCAM#software-requirements)
 2. [Install Instructions](https://github.com/ogshull/Autoinjector-/tree/PVCAM#install-instructions)
-	- Install Python 2.7.13
-	- Install Arduino
-	- Install Micromanager
-	- Install Sensapex SDK
-	- Install Python packages 
-
+3. [Running the Application](https://github.com/ogshull/Autoinjector-/tree/PVCAM#running-the-application)
+4. [License](https://github.com/ogshull/Autoinjector-/tree/PVCAM#license)
 It is recommended to start in order. 
 
 ## System requirements 
@@ -30,7 +26,7 @@ A complete list of available cameras can be found at micromanager's device suppo
 ### Software Requirements
 Currently, the autoinjector is only available with Windows support. The following libraries are used in the Autoinjector software (see install instructions for how to install). 
 1. [Python 2.7.12](https://github.com/ogshull/Autoinjector-/tree/PVCAM#1-python)
-	[Packages](https://github.com/ogshull/Autoinjector-/tree/PVCAM#python-packages)
+	-[Packages](https://github.com/ogshull/Autoinjector-/tree/PVCAM#python-packages)
 		- pip 
 		- Native python libraties
 			- time
