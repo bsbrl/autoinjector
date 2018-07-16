@@ -111,15 +111,24 @@ Install the following software to operate the Autoinjector. It is recommended to
 
 ### 5. Autoinjector Software 
 1. Download or clone this repository by clicking "Clone or Download" button on the top right area of the [Autoinjector Respository](https://github.com/ogshull/Autoinjector-/tree/PVCAM) and extract the files. 
-2. Open command prompt (make sure to run as administrator), and navigate to the folder of the downloaded and extracted zip file. For example, if I extracted the zipped download to "C:\Users\Gabi\Downloads\Autoinjector-" I would go to this directory in the command prompt by typing:
-	```
-	cd C:\Users\Gabi\Downloads\Autoinjector-
-	```
-3. To test that the software was downloaded properly, type:
-	```
-	python launchapp.py
-	```
-This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
+
+2. Upload arduino code:
+	1. Once the arduino is installed, connect your arduino to your computer via USB.
+	2. In the downloaded Autoinjector folder, open the file "Autoinjector-\pythonarduino\pythonarduinotriggeropen.ino"
+	3. Follow the instructions to identify your port and connect to the arduino from the arudino software as shown in [this tutorial](https://www.arduino.cc/en/Guide/ArduinoUno#toc5). Take note of which COM port your arduino is on i.e. COM6.
+	4. Upload the pythonarduinotriggeropen.ino file as shown in [this tutorial](https://www.arduino.cc/en/Guide/ArduinoUno#toc6).
+
+3. Test autoinjector code:
+	1. Run the command prompt as administrator
+	2. Navigate to the folder of the downloaded and extracted zip file. For example, if I extracted the zipped download to "C:\Users\Gabi\Downloads\Autoinjector-" I would go to this directory in the command prompt by typing:
+		```
+		cd C:\Users\Gabi\Downloads\Autoinjector-
+		```
+	3. To test that the software was downloaded properly, type:
+		```
+		python launchapp.py
+		```
+		This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
 
 ### 6. Your Camera Driver
 Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
