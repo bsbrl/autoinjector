@@ -54,29 +54,14 @@ Currently, the autoinjector is only available with Windows support. The followin
 -------------
 Install the following software to operate the Autoinjector. It is recommended to install the software in the order it is listed. Make sure to run every file as administrator (right click, "Run as administrator")! Otherwise, the install may fail. 
 
-### Python
+### 1. Python
 1. Download the python windows installer [here](https://www.python.org/downloads/release/python-2713/). 
 2. Launch the installer and follow installation instructions on screen.
 3. Add Python to system environment path by following [these instructions](https://superuser.com/questions/143119/how-do-i-add-python-to-the-windows-path) so that you can run python from any windows command prompt.
 
 #### Python Packages
 1. Pip (python installer package). Follow instructions [here](https://github.com/BurntSushi/nfldb/wiki/Python-&-pip-Windows-installation#pip-install) to download PIP. 
-
-### Arduino
-1. Download the arduino windows installer [here](https://www.arduino.cc/en/Main/Software?).
-2. Launch the installer and follow installation instructions on screen.
-
-### Micromanager
-1. Download the micromanager windows installer [here](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release).
-2. Launch the installer and follow installation instructions on screen.
-
-### Sensapex SDK
-1. TBD
-
-### Autoinjector Software 
-1. Download or clone this repository by clicking "Clone or Download" button on the topright area of the [Autoinjector Respository](https://github.com/ogshull/Autoinjector-/tree/PVCAM) and extract the files. 
-2. Open command prompt (make sure to run as administrator).
-3. Download Python packages (for more info/support, click the names of the packages). To download the python packages run the following commands from the command prompt:
+2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages:
 	- [Matplotlib](https://matplotlib.org/users/installing.html#windows)
 		```
 		python -m pip install matplotlib
@@ -115,9 +100,34 @@ Install the following software to operate the Autoinjector. It is recommended to
 		4. Run the downloaded installer.
 
 
-## Running the Application
+### 2. Arduino
+1. Download the arduino windows installer [here](https://www.arduino.cc/en/Main/Software?).
+2. Launch the installer and follow installation instructions on screen.
 
- To run the program click the file "launchapp.py" in the main directory. This will launch the GUI and report any errors with hardware.
+### 3. Micromanager
+1. Download the micromanager windows installer [here](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release).
+2. Launch the installer and follow installation instructions on screen.
+
+### 4. Sensapex SDK
+1. TBD
+
+### 5. Autoinjector Software 
+1. Download or clone this repository by clicking "Clone or Download" button on the top right area of the [Autoinjector Respository](https://github.com/ogshull/Autoinjector-/tree/PVCAM) and extract the files. 
+2. Open command prompt (make sure to run as administrator), and navigate to the folder of the downloaded and extracted zip file. For example, if I extracted the zipped download to "C:\Users\Gabi\Downloads\Autoinjector-" I would go to this directory in the command prompt by typing:
+	```
+	cd C:\Users\Gabi\Downloads\Autoinjector-
+	```
+3. To test that the software was downloaded properly, type:
+	```
+	python launchapp.py
+	```
+This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
+
+
+## Running the Application
+---------
+
+ To run the program normally, click the file "launchapp.py" in the Autoinjector folder. This will launch the GUI and report any errors with hardware.
 
 ## License
 
