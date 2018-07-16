@@ -29,26 +29,28 @@ A complete list of available cameras can be found at micromanager's device suppo
 
 ### Software Requirements
 Currently, the autoinjector is only available with Windows support. The following libraries are used in the Autoinjector software (see install instructions for how to install). 
-- Python 2.7.12 
-- Arduino 1.8
-	- pip 
-	- Native python libraties
-		- time
-		- sys
-		- os
-		- user
-	- Matplotlib 2.0.0 +
-	- MMCorePy 1.4.22+ (Micromanager python API)
-	- NumPy 1.12.0 +
-	- OpenCV 3.1.0 +
-	- Pyserial 
-	- PyQt 4.11.14 +
-	- Sensapex API
-	- scikit-image 0.13.0 +
-	- Scipy 0.19.0 +
-- Micromanager 1.4.22 +
-- Sensapex SDK
-- Your camera driver
+1. [Python 2.7.12](https://github.com/ogshull/Autoinjector-/tree/PVCAM#1-python)
+	[Packages](https://github.com/ogshull/Autoinjector-/tree/PVCAM#python-packages)
+		- pip 
+		- Native python libraties
+			- time
+			- sys
+			- os
+			- user
+		- Matplotlib 2.0.0 +
+		- MMCorePy 1.4.22+ (Micromanager python API)
+		- NumPy 1.12.0 +
+		- OpenCV 3.1.0 +
+		- Pyserial 
+		- PyQt 4.11.14 +
+		- Sensapex API
+		- scikit-image 0.13.0 +
+		- Scipy 0.19.0 +
+2. [Arduino 1.8](https://github.com/ogshull/Autoinjector-/tree/PVCAM#2-arduino)
+3. [Micromanager 1.4.22 +](https://github.com/ogshull/Autoinjector-/tree/PVCAM#3-micromanager)
+4. [Sensapex SDK](https://github.com/ogshull/Autoinjector-/tree/PVCAM#4-sensapex-sdk)
+5. [The Autoinjector software](https://github.com/ogshull/Autoinjector-/tree/PVCAM#5-autoinjector-software)
+6. [Your camera driver](https://github.com/ogshull/Autoinjector-/tree/PVCAM#6-your-camera-driver)
 
 ## Install Instructions
 -------------
@@ -59,46 +61,45 @@ Install the following software to operate the Autoinjector. It is recommended to
 2. Launch the installer and follow installation instructions on screen.
 3. Add Python to system environment path by following [these instructions](https://superuser.com/questions/143119/how-do-i-add-python-to-the-windows-path) so that you can run python from any windows command prompt.
 
-#### Python Packages
-1. Pip (python installer package). Follow instructions [here](https://github.com/BurntSushi/nfldb/wiki/Python-&-pip-Windows-installation#pip-install) to download PIP. 
-2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages:
-	- [Matplotlib](https://matplotlib.org/users/installing.html#windows)
-		```
-		python -m pip install matplotlib
-		```
+	#### Python Packages
+	1. Pip (python installer package). Follow instructions [here](https://github.com/BurntSushi/nfldb/wiki/Python-&-pip-Windows-installation#pip-install) to download PIP. 
+	2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages:
+		- [Matplotlib](https://matplotlib.org/users/installing.html#windows)
+			```
+			python -m pip install matplotlib
+			```
 
-	- [NumPy](http://www.numpy.org/)
-		```
-		python -m pip install numpy
-		```
+		- [NumPy](http://www.numpy.org/)
+			```
+			python -m pip install numpy
+			```
 
-	- [OpenCV](https://pypi.org/project/opencv-python/3.1.0/)
-		```
-		python -m pip install opencv-python
-		```
+		- [OpenCV](https://pypi.org/project/opencv-python/3.1.0/)
+			```
+			python -m pip install opencv-python
+			```
 
-	- [Pyserial](https://github.com/pyserial/pyserial)
-		```
-		python -m pip install pyserial
-		```
+		- [Pyserial](https://github.com/pyserial/pyserial)
+			```
+			python -m pip install pyserial
+			```
 
-	- [scikit-image](http://scikit-image.org/docs/dev/install.html)
-		```
-		python -m pip install scikit-image
-		```
+		- [scikit-image](http://scikit-image.org/docs/dev/install.html)
+			```
+			python -m pip install scikit-image
+			```
 
-	- [Scipy](https://www.scipy.org/install.html)
-		```
-		python -m pip install scipy
-		```
+		- [Scipy](https://www.scipy.org/install.html)
+			```
+			python -m pip install scipy
+			```
 
-	- [PyQt](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html)
-		PyQt4 is the only one which we cannot download with pip. To install it, do the following:
-		1. Download windows source package [SIP](https://riverbankcomputing.com/software/sip/download). 
-		2. Run the downloaded SIP installer.
-		3. Download windows source package [PyQT4](https://riverbankcomputing.com/software/pyqt/download).
-		4. Run the downloaded installer.
-
+		- [PyQt](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html)
+			PyQt4 is the only one which we cannot download with pip. To install it, do the following:
+			1. Download windows source package [SIP](https://riverbankcomputing.com/software/sip/download). 
+			2. Run the downloaded SIP installer.
+			3. Download windows source package [PyQT4](https://riverbankcomputing.com/software/pyqt/download).
+			4. Run the downloaded installer.
 
 ### 2. Arduino
 1. Download the arduino windows installer [here](https://www.arduino.cc/en/Main/Software?).
@@ -123,6 +124,8 @@ Install the following software to operate the Autoinjector. It is recommended to
 	```
 This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
 
+### 6. Your Camera Driver
+Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
 
 ## Running the Application
 ---------
