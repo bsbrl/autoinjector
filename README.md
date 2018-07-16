@@ -71,7 +71,7 @@ Install the following software to operate the Autoinjector. It is recommended to
 2. Launch the installer and follow installation instructions on screen.
 
 ### Sensapex SDK
-1.... Need to figure out how to distrubute SDK
+1. TBD
 
 ### Autoinjector Software 
 1. Download or clone this repository by clicking "Clone or Download" button on the topright area of the [Autoinjector Respository](https://github.com/ogshull/Autoinjector-/tree/PVCAM) and extract the files. 
@@ -81,18 +81,38 @@ Install the following software to operate the Autoinjector. It is recommended to
 		```
 		python -m pip install matplotlib
 		```
-		
+
 	- [NumPy](http://www.numpy.org/)
 		```
 		python -m pip install numpy
 		```
 
-	- OpenCV 3.1.0 +
-	- Pyserial 
-	- PyQt 4.11.14 +
-	- Sensapex API
-	- scikit-image 0.13.0 +
-	- Scipy 0.19.0 +
+	- [OpenCV](https://pypi.org/project/opencv-python/3.1.0/)
+		```
+		python -m pip install opencv-python
+		```
+
+	- [Pyserial](https://github.com/pyserial/pyserial)
+		```
+		python -m pip install pyserial
+		```
+
+	- [scikit-image](http://scikit-image.org/docs/dev/install.html)
+		```
+		python -m pip install scikit-image
+		```
+
+	- [Scipy](https://www.scipy.org/install.html)
+		```
+		python -m pip install scipy
+		```
+
+	- [PyQt](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html)
+		PyQt4 is the only one which we cannot download with pip. To install it, do the following:
+		1. Download windows source package [SIP](https://riverbankcomputing.com/software/sip/download). 
+		2. Run the downloaded SIP installer.
+		3. Download windows source package [PyQT4](https://riverbankcomputing.com/software/pyqt/download).
+		4. Run the downloaded installer.
 
 
 ## Running the Application
