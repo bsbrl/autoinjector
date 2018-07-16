@@ -7,6 +7,7 @@ import MMCorePy
 from restestgrid import ResTest
 import os
 import sys
+from scipy.misc import bytescale
 MM_PATH = os.path.join('C:', os.path.sep, 'Program Files',
 'Micro-Manager-1.4')
 sys.path.append(MM_PATH)
@@ -26,7 +27,7 @@ class vidcontrols(QThread):
         self.imagevals = imagevals
         self.scalefactor = scalefactor
         self.restest = restest
-        self.exposure = 3
+        #self.exposure = 30
 
         #error message box
         self.error_msg = QMessageBox()
@@ -76,14 +77,16 @@ class vidcontrols(QThread):
         #this function controls the streaming video
         
         #check exposure value
-        self.cap.setProperty(self.cam, 'Exposure', self.exposure)
+        try:
+            self.cap.setProperty(self.cam, 'Exposure', self.exposure)
+        except:
+            #print('camera does not have property, exposure')
+            s =1 
 
         #if video is streaming
         if self.cap.getRemainingImageCount() > 0:
             self.frame = self.cap.getLastImage()
-
-
-            self.frame = (self.frame/self.imagevals).astype('uint8')
+            self.frame = bytescale(self.frame) #convert to 8 bit from 16 bit
 
             if self.rot > 0: #rotate 
                 rows,cols = self.frame.shape 
@@ -171,8 +174,3 @@ class vidcontrols(QThread):
         #draws coordinates output from tipdetector
         self.tipx = tipx
         self.tipy = tipy
-    
-
-
-
-
