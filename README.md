@@ -48,6 +48,7 @@ Currently, the autoinjector is only available with Windows support. The followin
 4. [Sensapex SDK](https://github.com/ogshull/Autoinjector-/tree/PVCAM#4-sensapex-sdk)
 5. [The Autoinjector software](https://github.com/ogshull/Autoinjector-/tree/PVCAM#5-autoinjector-software)
 6. [Your camera driver](https://github.com/ogshull/Autoinjector-/tree/PVCAM#6-your-camera-driver)
+7. [Sensapex SDK](https://www.sensapex.com/products/ump-micromanipulation-system/)
 
 ## Install Instructions
 -------------
@@ -115,10 +116,7 @@ Install the following software to operate the Autoinjector. It is recommended to
 3. Follow [these instructions](https://stackoverflow.com/questions/3701646/how-to-add-to-the-pythonpath-in-windows) to add the following folder to PYTHONPATH vairable:
 	- Add "C:\Program Files\Micro-Manager-1.4" to PYTHONPATH variable
 
-### 4. Sensapex SDK
-1. TBD
-
-### 5. Autoinjector Software 
+### 4. Autoinjector Software 
 1. Download or clone this repository by clicking "Clone or Download" button on the top right area of the [Autoinjector Respository](https://github.com/ogshull/Autoinjector-/tree/PVCAM) and extract the files. 
 
 2. Upload arduino code:
@@ -138,6 +136,13 @@ Install the following software to operate the Autoinjector. It is recommended to
 		python launchapp.py
 		```
 		This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
+
+### 5. Sensapex SDK
+1. Contact [Sensapex](https://www.sensapex.com/products/ump-micromanipulation-system/) and request the "ump.dll" file to use with python. 
+
+2. You will also need to download the file "sensapex.py" from [here](https://github.com/acq4/acq4/blob/2b7a85857b64376d19d2c8658d693b376a5fdbbf/acq4/drivers/sensapex/sensapex.py). 
+
+3. Copy the "ump.dll" and "sensapex.py" files into the folder you downloaded called "motorcontrol" which is in "autoinjector >> motorcontrol".
 
 ### 6. Your Camera Driver
 Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
