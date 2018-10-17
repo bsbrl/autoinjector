@@ -149,7 +149,7 @@ Follow the instructions for your camera driver install. In our work we have used
 
 ## Running the Application
 ---------
-
+ 
  To run the program normally, click the file "launchapp.py" in the Autoinjector folder. This will launch the GUI and report any errors with hardware. For additional operating instructions see the user manual included with the publication.
 
 ## License
