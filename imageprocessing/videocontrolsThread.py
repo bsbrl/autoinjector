@@ -172,3 +172,11 @@ class vidcontrols(QThread):
         #draws coordinates output from tipdetector
         self.tipx = tipx
         self.tipy = tipy
+
+    def vid_stop(self):
+        '''
+        Stops video so GUI can close. Specifically, stops the continous image
+        sequence acquisition from the camera and quits this QThread. 
+        '''
+        self.cap.stopSequenceAcquisition()
+        self.quit()

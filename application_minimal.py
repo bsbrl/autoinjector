@@ -703,9 +703,9 @@ class ControlWindow(QWidget):
     def closeEvent(self, event):
         close_pressure = injection(arduino,0, 0,0,0,'bp')
         close_pressure.start()
+        self.vidctrl.vid_stop()
         time.sleep(0.5)
         self.close()
-        destroy
 
 if __name__ == "__main__":
     import sys
