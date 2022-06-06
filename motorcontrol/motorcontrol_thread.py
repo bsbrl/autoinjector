@@ -2,9 +2,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os, sys, time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-from sensapex import SensapexDevice, UMP, UMPError
-from injectioncontrolmod import injection 
-import user
+from .sensapex import SensapexDevice, UMP, UMPError
+from .injectioncontrolmod import injection 
 import numpy as np
 
 class motorcontroller(QThread):
@@ -40,14 +39,14 @@ class motorcontroller(QThread):
         self.run_trajectory()
 
     def run_trajectory(self):
-        position0 = self.devs[2].get_pos() #current position
+        position0 = self.devs[1].get_pos() #current position
         print("position0 = " +str(position0))
         
         #sometimes there is an error with the sensapex manipulator and it says its position is zero, this ruins the trajectory
         if position0[0] < 100:
             print('sensapex error, wait')
             time.sleep(0.3)
-            position0 = self.devs[2].get_pos() #the delay should fix it        
+            position0 = self.devs[1].get_pos() #the delay should fix it        
 
         # if using a 3-axis manipulator, the xaxis is 0. Else, it's 3
         if len(position0) == 3:
@@ -59,7 +58,7 @@ class motorcontroller(QThread):
         position1 = position0[:]
         position2 = position1[:]
         position2[xaxis] += (self.stepsizex)
-        self.devs[2].goto_pos(position2, self.speed)
+        self.devs[1].goto_pos(position2, self.speed)
         print("edge of tissue" + str(position2))
         time.sleep(0.25)
 
@@ -67,7 +66,7 @@ class motorcontroller(QThread):
         pos2 = position2
         position3 = position2[:]
         position3[xaxis] += self.injectiondepth
-        self.devs[2].goto_pos(position3, self.speed)
+        self.devs[1].goto_pos(position3, self.speed)
         print("injection depth =" +str(self.injectiondepth))
         print("injection site" + str(position3))
         time.sleep(0.25)
@@ -75,38 +74,38 @@ class motorcontroller(QThread):
         #pull out of tissue
         posfinalout = position3[:]
         posfinalout[xaxis]-= (self.injectiondepth+self.approachdist)
-        self.devs[2].goto_pos(posfinalout, self.speed)
+        self.devs[1].goto_pos(posfinalout, self.speed)
         print("pull out tissue position = " + str(posfinalout))
         time.sleep(0.25)
         
         #step along tissue in y direction
         positiony = posfinalout[:]
         positiony[1] += self.stepsizey
-        self.devs[2].goto_pos(positiony, self.speed)
+        self.devs[1].goto_pos(positiony, self.speed)
         print("move in y pos = " + str(positiony))
         time.sleep(0.25)
 
         #correct for Zdrift if applicable
         positionzdrift = positiony[:]
         positionzdrift[2] += self.zdrift
-        self.devs[2].goto_pos(positionzdrift, self.speed)
+        self.devs[1].goto_pos(positionzdrift, self.speed)
         print("z drift position = " + str(positionzdrift))
         time.sleep(0.25)
 
         #go to edge of tissue
         positionedge = positionzdrift[:]
         positionedge[xaxis] += self.approachdist
-        self.devs[2].goto_pos(positionedge, self.speed)
+        self.devs[1].goto_pos(positionedge, self.speed)
         time.sleep(0.25)
         print("final position = " + str(positionedge))
                 
 
     def finalpullout(self, dist, zdist):
-        current_pos = self.devs[2].get_pos()
+        current_pos = self.devs[1].get_pos()
 
         #in some cases, sensapex does not report a correct xyz pos, thus we wait
         while len(current_pos) < 3:
-            current_pos = self.devs[2].get_pos()
+            current_pos = self.devs[1].get_pos()
             time.sleep(0.01)      
             print("current pos =" + str(current_pos))
 
@@ -118,7 +117,7 @@ class motorcontroller(QThread):
 
         #in some cases, sensapex says xaxis = 2, but this is just a bug so we wait
         while current_pos[xaxis] == 2:
-            current_pos = self.devs[2].get_pos()
+            current_pos = self.devs[1].get_pos()
             time.sleep(0.01)
             print("error, new current pos =" + str(current_pos))
 
@@ -126,7 +125,7 @@ class motorcontroller(QThread):
         end_pos[xaxis] -= dist
         end_pos[2] += zdist
         print("end pos =" + str(end_pos))
-        self.devs[2].goto_pos(end_pos, 1000)
+        self.devs[1].goto_pos(end_pos, 1000)
 
 
 
@@ -154,7 +153,7 @@ class motorpositionThread(QThread):
         asks motors for position, return [x,y,z] in uM 
         """ 
         self.print_pos()
-        self.current_motor = self.devs[2].get_pos()
+        self.current_motor = self.devs[1].get_pos()
         print(self.current_motor)
         try:
             self.motorposition = self.pos_numerical

@@ -72,7 +72,7 @@ class injection(QThread):
         sendcommand = self.send
         self.sendfinal = ('string sent from python ' + self.send)
         self.arduino.flush()
-        self.arduino.write(sendcommand)
+        self.arduino.write(sendcommand.encode('utf8'))
         self.listen()
 
     def listen(self):

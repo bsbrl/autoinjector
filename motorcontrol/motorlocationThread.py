@@ -2,9 +2,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os, sys, time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-from sensapex import SensapexDevice, UMP, UMPError
-from injectioncontrolmod import injection 
-import user
+from .sensapex import SensapexDevice, UMP, UMPError
+from .injectioncontrolmod import injection 
 import numpy as np
 
 class motorpositionThread(QThread):

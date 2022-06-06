@@ -3,15 +3,11 @@ from PyQt4.QtGui import *
 import cv2
 import numpy as np
 import time
-import MMCorePy
-from restestgrid import ResTest
+import pymmcore
+from .restestgrid import ResTest
 import os
 import sys
-from scipy.misc import bytescale
-MM_PATH = os.path.join('C:', os.path.sep, 'Program Files',
-'Micro-Manager-1.4')
-sys.path.append(MM_PATH)
-os.environ['PATH'] = MM_PATH + ';' + os.environ['PATH']
+from skimage.util import img_as_ubyte
 
 
 class vidcontrols(QThread):
@@ -47,7 +43,9 @@ class vidcontrols(QThread):
     # ---------------------- Camera Setup ------------------------------------------
     def CAMsetup(self):
         try:
-            self.cap = MMCorePy.CMMCore()
+            self.cap = pymmcore.CMMCore()
+            MM_PATH = os.path.join('C:', os.path.sep, 'Program Files','Micro-Manager-2.0')
+            self.cap.setDeviceAdapterSearchPaths([MM_PATH])
             self.cap.loadDevice(self.cam,self.brand,self.val)
             self.cap.initializeAllDevices()
             self.cap.setCameraDevice(self.cam)
@@ -86,7 +84,7 @@ class vidcontrols(QThread):
         #if video is streaming
         if self.cap.getRemainingImageCount() > 0:
             self.frame = self.cap.getLastImage()
-            self.frame = bytescale(self.frame) #convert to 8 bit from 16 bit
+            self.frame = img_as_ubyte(self.frame) #convert to 8 bit from 16 bit
 
             if self.rot > 0: #rotate 
                 rows,cols = self.frame.shape 
@@ -101,7 +99,7 @@ class vidcontrols(QThread):
             if self.restest == "On":
                 try:
                     #cv2.circle(self.frame, (self.width/2, self.height/2), 3, 255, -1)
-                    for i in xrange(0,len(self.points.drawpointsx)):
+                    for i in range(0,len(self.points.drawpointsx)):
                         cv2.circle(self.frame, (self.points.drawpointsx[i], self.points.drawpointsy[i]), 1, 255, -1)
                 except:
                     self.points = ResTest()

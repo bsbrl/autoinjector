@@ -53,6 +53,7 @@ class ControlWindow(QWidget):
             self.arduinofound = True
             self.com = com
         except:
+            arduino = None
             self.error_msg.setText("Arduino not detected, make sure you selected the correct com port, plug in, and try again.")
             self.error_msg.exec_()
             self.arduinofound = False
@@ -138,7 +139,7 @@ class ControlWindow(QWidget):
         
         #automated injection controls
         # -*- coding: utf-8 -*-
-        self.mu = u"µ"
+        self.mu = "µ"
         self.trajectoryplan = QVBoxLayout()
         self.trajectoryplan_labelaproachdist = QLabel("Approach Distance ("+  self.mu +"m)   ")
         self.trajectoryplan_labeldepth = QLabel("Depth ("+  self.mu +"m)                      ")
@@ -200,7 +201,7 @@ class ControlWindow(QWidget):
 
         #Manipulator Status 
         # -*- coding: utf-8 -*-
-        self.mu = u"µ"
+        self.mu = "µ"
         self.motorchangeincrementtext = QLabel("Increment (" + self.mu + "m)    ")
         self.motorchangespeedtext = QLabel("    Speed (%)       ")
         self.motorchangeincrement = QLineEdit(self)
@@ -705,3 +706,11 @@ class ControlWindow(QWidget):
         time.sleep(0.5)
         self.close()
         destroy
+
+if __name__ == "__main__":
+    import sys
+    app = QApplication(sys.argv)
+    app.setApplicationName('MyWindow')
+    main = ControlWindow('HamamatsuHam_DCAM', 'HamamatsuHam', 'HamamatsuHam_DCAM', '2x2', 270, 256, 1.3, 'Off', 'com3', 40000)
+    main.show()
+    sys.exit(app.exec_())
