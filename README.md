@@ -114,7 +114,7 @@ Install the following software to operate the Autoinjector. It is recommended to
 2. Launch the installer and follow installation instructions on screen.
 3. Make sure it is installed at `C://Program Files/Micro-Manager-2.0`
 
-### 4. Sensapex sofware
+### 4. Sensapex software
 1. Start with pip installing the sensapex package as detailed above. However, pip installing the sensapex package likely resulted in an incomplete installation (a missing piece of software).
 2. Follow the guidance in this [GitHub issue](https://github.com/sensapex/sensapex-py/issues/9) to properly install the Sensapex package.
 	* To complete the installation, you must download the 1.022 binaries from [Sensapex](http://dist.sensapex.com/misc/um-sdk/latest/) and place the "libum.dll" file in the senspex package folder containing "sensapex.py" (i.e. `/python-installation-path/Lib/site-packages/sensapex`)
