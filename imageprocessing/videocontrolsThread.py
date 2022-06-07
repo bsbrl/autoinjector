@@ -1,5 +1,6 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import QImage, QPixmap
 import cv2
 import numpy as np
 import time
@@ -27,7 +28,7 @@ class vidcontrols(QThread):
 
         #error message box
         self.error_msg = QMessageBox()
-        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setIcon(QMessageBox.Icon.Critical)
         self.error_msg.setWindowTitle("Error")
         
         #initiates stream of video 
@@ -63,7 +64,7 @@ class vidcontrols(QThread):
             
         except:
             self.error_msg.setText("Camera not detected yet, close window and try again")
-            self.error_msg.exec_()
+            self.error_msg.exec()
             self.camerafound = False
             self.image_analysis_window.setText("CAMERA ERROR. Verify camera is detected in Device Manager, correct camera settings are applied, and restart program. \n Python error = \n" + str(sys.exc_info()[1]))
 
@@ -133,9 +134,9 @@ class vidcontrols(QThread):
                     self.startcap = 0
             
             #display frame
-            self.image = QImage(self.frame, self.frame.shape[1], self.frame.shape[0], self.frame.strides[0], QImage.Format_Indexed8)
-            self.image_analysis_window.setPixmap(QPixmap.fromImage(self.image.scaledToWidth((self.frame.shape[1]/self.scalefactor),Qt.SmoothTransformation)))
-            self.image_analysis_window.setFixedSize((self.frame.shape[1]/self.scalefactor),(self.frame.shape[0]/self.scalefactor))
+            self.image = QImage(self.frame, self.frame.shape[1], self.frame.shape[0], self.frame.strides[0], QImage.Format.Format_Indexed8)
+            self.image_analysis_window.setPixmap(QPixmap.fromImage(self.image.scaledToWidth(int(self.frame.shape[1]/self.scalefactor),Qt.TransformationMode.SmoothTransformation)))
+            self.image_analysis_window.setFixedSize(int(self.frame.shape[1]/self.scalefactor),int(self.frame.shape[0]/self.scalefactor))
             self.image_analysis_window.mousePressEvent = self.getPos
 
     #-------------------------- Motor calibration command

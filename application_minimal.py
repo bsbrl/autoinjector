@@ -1,7 +1,8 @@
 
 # -*- coding: utf-8 -*-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import QIcon
 from imageprocessing.videocontrolsThread import vidcontrols as vc
 from imageprocessing.draw import drawobj
 from motorcontrol.altermotorposition import delmotor
@@ -30,7 +31,7 @@ class ControlWindow(QWidget):
         QWidget.__init__(self)
         QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
         self.error_msg = QMessageBox()
-        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setIcon(QMessageBox.Icon.Critical)
         self.error_msg.setWindowTitle("Error")
         self.fourtyxmag = fourtyxcalibdist #distance manipulators move for calibration based on camera FOV and mag
 
@@ -42,7 +43,7 @@ class ControlWindow(QWidget):
             self.motorfound = True
         except:
             self.error_msg.setText("Manipulators not detected. Wait 2 minutes then relaunch the app. If this does not work, replug manipulators into computer.")
-            self.error_msg.exec_()
+            self.error_msg.exec()
             print("Manipulators not detected")
             self.motorfound = False
 
@@ -55,7 +56,7 @@ class ControlWindow(QWidget):
         except:
             arduino = None
             self.error_msg.setText("Arduino not detected, make sure you selected the correct com port, plug in, and try again.")
-            self.error_msg.exec_()
+            self.error_msg.exec()
             self.arduinofound = False
 
         #initiate video stream thread using camera settings
@@ -123,12 +124,12 @@ class ControlWindow(QWidget):
         misc_showshape = QPushButton("Show Edge")
         misc_showshape.clicked.connect(self.vidctrl.showshapes)
         exposurelabel = QLabel("Camera Exposure")
-        self.exposureslider = QSlider(Qt.Horizontal)
+        self.exposureslider = QSlider(Qt.Orientation.Horizontal)
         self.exposureslider.setMinimum(4)
         self.exposureslider.setMaximum(30)
         self.exposureslider.setValue(8)
-        self.exposureslider.setTickPosition(QSlider.TicksBelow)
-        self.exposureslider.setTickInterval(0.5)
+        self.exposureslider.setTickPosition(QSlider.TickPosition.TicksBelow)
+        self.exposureslider.setTickInterval(0)
         self.exposureslider.valueChanged.connect(self.exposurevaluechange)
         misc.addWidget(exposurelabel)
         misc.addWidget(self.exposureslider)
@@ -169,11 +170,11 @@ class ControlWindow(QWidget):
         self.trajectoryplan.addLayout(depth)
         self.trajectoryplan.addLayout(space)
         self.trajectoryplan.addLayout(speed)
-        self.sl = QSlider(Qt.Horizontal)
+        self.sl = QSlider(Qt.Orientation.Horizontal)
         self.sl.setMinimum(10)
         self.sl.setMaximum(255)
         self.sl.setValue(10)
-        self.sl.setTickPosition(QSlider.TicksBelow)
+        self.sl.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.sl.setTickInterval(30)
         self.sl.valueChanged.connect(self.valuechange)
         self.automatedcontrol_window_left = QVBoxLayout()
@@ -269,7 +270,7 @@ class ControlWindow(QWidget):
         #response monitor 
         self.response_monitorgrid= QVBoxLayout()
         self.response_monitor_window = QTextBrowser()
-        self.response_monitor_window.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.response_monitor_window.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.response_monitorgrid.addWidget(self.response_monitor_window)
         groupbox_response_monitorgrid= QGroupBox('System Status')
         groupbox_response_monitorgrid.setLayout(self.response_monitorgrid)
@@ -419,7 +420,7 @@ class ControlWindow(QWidget):
         #calibrates motors 
         msg = QMessageBox()
         msg.setWindowIcon(QIcon('favicon.png'))
-        msg.setIcon(QMessageBox.Information)
+        msg.setIcon(QMessageBox.Icon.Information)
         msg.setWindowTitle("Motor Calibration")
 
         try:
@@ -427,11 +428,11 @@ class ControlWindow(QWidget):
             msg.setText("Bring the tip into focus and select the tip using Select tip button.")
             msg.setInformativeText("Press OK when complete.")
             msg.buttonClicked.connect(self.motorcalib_step1)
-            retval = msg.exec_()
+            retval = msg.exec()
 
         except:
              self.error_msg.setText("Please select magnification in Calibration window. \n Python error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def motorcalib_step1(self):
@@ -442,7 +443,7 @@ class ControlWindow(QWidget):
             movey.start()
         except:
              self.error_msg.setText("Please click on the tip first and press step 1.1 calibration again. \n Python error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
             
     def motorcalib_step2(self):
@@ -459,7 +460,7 @@ class ControlWindow(QWidget):
             self.calculatetheta(xcameraline,ycameraline)
         except:
              self.error_msg.setText("Please click on the tip now and press step 1.2 calibration again. \n Python error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def calculatetheta(self,xcameraline,ycameraline):
@@ -483,7 +484,7 @@ class ControlWindow(QWidget):
             
         except:
              self.error_msg.setText("Error calculating angle. \n Python error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     """
@@ -505,7 +506,7 @@ class ControlWindow(QWidget):
             
         except:
             self.error_msg.setText("CAM error, is camera plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
-            self.error_msg.exec_()
+            self.error_msg.exec()
             self.response_monitor_window.append(">> Camera error. \n>> Python error = " + str(sys.exc_info()))
         
     """
@@ -543,7 +544,7 @@ class ControlWindow(QWidget):
             move.start()
         except:
              self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
         
     def get_current_pos_func(self):
@@ -557,7 +558,7 @@ class ControlWindow(QWidget):
             print('m1 real =' + str(self.m1))
         except:
              self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def calculate_error_func(self):
@@ -582,7 +583,7 @@ class ControlWindow(QWidget):
                 print(self.errord)
         except:
              self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def go_to_centerpoint_func(self):
@@ -600,7 +601,7 @@ class ControlWindow(QWidget):
             move.start()
         except:
              self.error_msg.setText("restest err. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def add_restestpoint(self):
@@ -630,7 +631,7 @@ class ControlWindow(QWidget):
             self.motorzposition.setText(str(self.registerpositionz) +  self.mu +"m")
         except:
              self.error_msg.setText("Manipulator error. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def advancemotor(self, axis, direction):
@@ -641,7 +642,7 @@ class ControlWindow(QWidget):
             move.start()
         except:
              self.error_msg.setText("Please enter an increment and speed in the manipulator window. \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
 
@@ -666,7 +667,7 @@ class ControlWindow(QWidget):
 
         except:
              self.error_msg.setText("Error, did you enter all parameters? Is the arduino plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
-             self.error_msg.exec_()
+             self.error_msg.exec()
              self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
         
     def runalongedgetrajectory(self):
@@ -686,7 +687,7 @@ class ControlWindow(QWidget):
 
         except:
             self.error_msg.setText("Please complete calibration, enter all parameters, and select tip of pipette.\nPython error = \n" + str(sys.exc_info()[1]))
-            self.error_msg.exec_()
+            self.error_msg.exec()
             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def updateresponse(self):
@@ -697,7 +698,7 @@ class ControlWindow(QWidget):
             self.trajimplement.stopprocess()
         except:
             self.error_msg.setText("You have to start the trajectory in order to be able to stop it...\nPython error = \n" + str(sys.exc_info()[1]))
-            self.error_msg.exec_()
+            self.error_msg.exec()
             self.response_monitor_window.append(">> Python error = " + str(sys.exc_info()))
 
     def closeEvent(self, event):
@@ -713,4 +714,4 @@ if __name__ == "__main__":
     app.setApplicationName('MyWindow')
     main = ControlWindow('HamamatsuHam_DCAM', 'HamamatsuHam', 'HamamatsuHam_DCAM', '2x2', 270, 256, 1.3, 'Off', 'com3', 40000)
     main.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

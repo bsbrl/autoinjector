@@ -2,8 +2,8 @@ import cv2
 import numpy as np 
 from scipy.interpolate import UnivariateSpline
 import matplotlib.pyplot as plt
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 import sys
 
 drawing = False # true if mouse is pressed
@@ -16,7 +16,7 @@ class drawobj(object):
     """
     def __init__(self,og):
         self.error_msg = QMessageBox()
-        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setIcon(QMessageBox.Icon.Critical)
         self.error_msg.setWindowTitle("Error")
 
         #og is image frame fed into function by videocontrols stream
@@ -84,5 +84,5 @@ class drawobj(object):
                 cv2.destroyAllWindows()
         except:
             self.error_msg.setText("Cannot draw line up then down, it must go in one direction only. Close window and try again. \n Python Error = \n" + str(sys.exc_info()))
-            self.error_msg.exec_()
+            self.error_msg.exec()
             cv2.destroyAllWindows()

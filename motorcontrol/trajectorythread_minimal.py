@@ -1,5 +1,5 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 import os, sys, time
 from .motorcontrol_thread import motorcontroller as mc
 import numpy as np

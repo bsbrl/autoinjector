@@ -1,6 +1,7 @@
 #!/usr/bin/python
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import QIcon
 import sys
 from application_minimal import ControlWindow
 import numpy as np
@@ -141,10 +142,10 @@ class camerasetting(QWidget):
             
         except:
             error_msg = QMessageBox()
-            error_msg.setIcon(QMessageBox.Critical)
+            error_msg.setIcon(QMessageBox.Icon.Critical)
             error_msg.setWindowTitle("Error")
             error_msg.setText("All options were not selected. Please choose all options and try again. \n Python error = \n" + str(sys.exc_info()[1]))
-            error_msg.exec_()
+            error_msg.exec()
         
 
 class CustomCam(QWidget):

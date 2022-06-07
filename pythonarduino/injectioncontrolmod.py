@@ -1,5 +1,5 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 import serial
 import time
 import numpy as np
