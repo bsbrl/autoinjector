@@ -6,9 +6,9 @@ import sys
 from application_minimal import ControlWindow
 import numpy as np
 
-class camerasetting(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
+class camerasetting(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setWindowIcon(QIcon('favicon.png'))
         self.initUI()
         self.custom = False
@@ -62,7 +62,7 @@ class camerasetting(QWidget):
         groupboxlayout4 = QGroupBox('Arduino Com Port Selection')
         groupboxlayout4.setLayout(self.layout4)
 
-        QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
+        QApplication.setStyle(QStyleFactory.create("Fusion"))
         mainlayout = QVBoxLayout()
         saveexitbutton = QPushButton("Save and Exit")
         saveexitbutton.clicked.connect(self.close1)
@@ -148,9 +148,9 @@ class camerasetting(QWidget):
             error_msg.exec()
         
 
-class CustomCam(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
+class CustomCam(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setWindowIcon(QIcon('favicon.png'))
         self.showbox()
 
@@ -208,7 +208,7 @@ class CustomCam(QWidget):
         groupboxlayout2 = QGroupBox('Custom Settings')
         groupboxlayout2.setLayout(self.layout2)
 
-        QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
+        QApplication.setStyle(QStyleFactory.create("Fusion"))
         mainlayout = QVBoxLayout()
         saveexitbutton = QPushButton("Save and Exit")
         saveexitbutton.clicked.connect(self.closecustom)

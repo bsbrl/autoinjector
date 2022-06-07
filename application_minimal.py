@@ -18,7 +18,7 @@ import numpy as np
 
 
 
-class ControlWindow(QWidget):
+class ControlWindow(QMainWindow):
     """ QWidget class to control video stream and capture
     This class controls the GUI of the autoinjector and all subsequent controls including:
     - motor controls and obtaining motor position information
@@ -27,9 +27,11 @@ class ControlWindow(QWidget):
     Calling this class will initiate all functions and also present user with GUI (hence bioler plate at bottom of file)
     """
 
-    def __init__(self,cam,brand,val,bins,rot,imagevals,scale,restest,com,fourtyxcalibdist):
-        QWidget.__init__(self)
-        QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
+    def __init__(self,cam,brand,val,bins,rot,imagevals,scale,restest,com,fourtyxcalibdist, parent=None):
+        super().__init__(parent)
+        self._central_widget = QWidget(self)
+        self.setCentralWidget(self._central_widget)
+        QApplication.setStyle(QStyleFactory.create("Fusion"))
         self.error_msg = QMessageBox()
         self.error_msg.setIcon(QMessageBox.Icon.Critical)
         self.error_msg.setWindowTitle("Error")
@@ -349,7 +351,7 @@ class ControlWindow(QWidget):
         #Main window details...
         self.setWindowTitle('Autoinjector')
         self.setGeometry(100,100,200,200)
-        self.setLayout(self.mastergrid)
+        self._central_widget.setLayout(self.mastergrid)
         self.show()
         self.setWindowIcon(QIcon('favicon.png'))
         self.timer = QTimer()  
