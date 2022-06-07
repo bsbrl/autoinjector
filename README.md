@@ -1,5 +1,8 @@
 # Autoinjector - Python 3 Version
 -------------
+This branch is for the updated version of the Autoinjector that is compatible with Python 3.7+. The legacy (Python 2.7+) Autoinjector software and instructions are available in the [PVCAM branch.](https://github.com/bsbrl/autoinjector/tree/PVCAM#Autoinjector)
+
+-------------
 
 The autoinjector is an automated computer vision guided platform to serially inject tissue with user parameter selection along a specified trajectory using a 3-axis micromanipulator. This read me takes you through the system requirements, install instructions, operating instructions, and how to customize the code based on different cameras. For a complete description of the device see the Autoinjector paper and supplementary materials. 
 
@@ -13,7 +16,6 @@ The autoinjector is an automated computer vision guided platform to serially inj
 It is recommended to start in order. 
 
 ## System requirements 
--------------
 A complete list of available cameras can be found at micromanager's device support (https://micro-manager.org/wiki/Device_Support). Manipulator support exists for Sensapex manipulators only. However, if the manipulators have available SDK, custom API can be made using Python's ctypes. Contact G. Shull for additional support for adapting SDKs for python use. 
 
 ### Hardware Requirements
@@ -45,12 +47,12 @@ Currently, the autoinjector is only available with Windows support. The followin
 		- Scipy 1.7.3
 2. [Arduino 1.8+](https://github.com/bsbrl/autoinjector/tree/Python3#2-arduino)
 3. [Micromanager 2.0+](https://github.com/bsbrl/autoinjector/tree/Python3#3-micromanager)
-4. [Sensapex software](https://github.com/bsbrl/autoinjector/tree/Python3#4-sensapex-sdk)
-5. [The Autoinjector software](https://github.com/bsbrl/autoinjector/tree/Python3#5-autoinjector-software)
-6. [Your camera driver](https://github.com/bsbrl/autoinjector/tree/Python3#6-your-camera-driver)
+4. [Sensapex software](https://github.com/bsbrl/autoinjector/tree/Python3#4-sensapex-software)
+5. [Your camera driver](https://github.com/bsbrl/autoinjector/tree/Python3#5-your-camera-driver)
+6. [The Autoinjector software](https://github.com/bsbrl/autoinjector/tree/Python3#6-autoinjector-software)
 
 ## Install Instructions
--------------
+
 Install the following software to operate the Autoinjector. It is recommended to install the software in the order it is listed. Make sure to run every file as administrator (right click, "Run as administrator")! Otherwise, the install may fail. 
 
 ### 1. Python
@@ -112,7 +114,15 @@ Install the following software to operate the Autoinjector. It is recommended to
 2. Launch the installer and follow installation instructions on screen.
 3. Make sure it is installed at `C://Program Files/Micro-Manager-2.0`
 
-### 4. Autoinjector Software 
+### 4. Sensapex sofware
+1. Start with pip installing the sensapex package as detailed above. However, pip installing the sensapex package likely resulted in an incomplete installation (a missing piece of software).
+2. Follow the guidance in this [GitHub issue](https://github.com/sensapex/sensapex-py/issues/9) to properly install the Sensapex package.
+	* To complete the installation, you must download the 1.022 binaries from [Sensapex](http://dist.sensapex.com/misc/um-sdk/latest/) and place the "libum.dll" file in the senspex package folder containing "sensapex.py" (i.e. `/python-installation-path/Lib/site-packages/sensapex`)
+
+### 5. Your Camera Driver
+Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
+
+### 6. Autoinjector Software 
 1. Download or clone this repository by clicking "Clone or Download" button on the top right area of the [Autoinjector Respository](https://github.com/bsbrl/autoinjector/tree/Python3) and extract the files. 
 
 2. Upload arduino code:
@@ -133,19 +143,8 @@ Install the following software to operate the Autoinjector. It is recommended to
 		```
 		This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
 
-### 5. Sensapex sofware
-1. Start with pip installing the sensapex package as detailed above. However, pip installing the sensapex package likely resulted in an incomplete installation (a missing piece of software).
-2. Follow the guidance in this [GitHub issue](https://github.com/sensapex/sensapex-py/issues/9) to properly install the Sensapex package.
-	* To complete the installation, you must download the 1.022 binaries from [Sensapex](http://dist.sensapex.com/misc/um-sdk/latest/) and place the "libum.dll" file in the senspex package folder containing "sensapex.py" (i.e. `/python-installation-path/Lib/site-packages/sensapex`)
-
-### 6. Your Camera Driver
-Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
-
-## Running the Application
----------
- 
+## Running the Application 
  To run the program normally, click the file "launchapp.py" in the Autoinjector folder. This will launch the GUI and report any errors with hardware. For additional operating instructions see the user manual included with the publication.
 
 ## License
--------------
 This work is lisenced under the MIT lisence. See LISENCE.txt for additional information.  
