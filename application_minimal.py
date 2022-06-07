@@ -324,7 +324,7 @@ class ControlWindow(QWidget):
             overrideon = QComboBox(self)
             overrideon.addItem("No")
             overrideon.addItem("Yes")
-            overrideon.activated[str].connect(self.updateoverride)
+            overrideon.textActivated[str].connect(self.updateoverride)
             overrideres.addWidget(overrideonlab,6,0)
             overrideres.addWidget(overrideon,6,1,1,2)
             overrideres.addWidget(overrideymotorthetalab, 7,0)
