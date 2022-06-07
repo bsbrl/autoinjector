@@ -21,12 +21,12 @@ A complete list of available cameras can be found at micromanager's device suppo
 2. Arduino Uno
 3. Microscope (brightfield, phase contrast, or DIC)
 4. Microscope camera (tested with Hamamatsu Orca Dcam, and Cool Snap Dyno PVCam)
-5. Sensapex Three axis uMP Micromanipulator 
+5. Sensapex Three/Four axis uMp Micromanipulator 
 6. Custom pressure rig
 
 ### Software Requirements
 Currently, the autoinjector is only available with Windows support. The following libraries are used in the Autoinjector software (see install instructions for how to install). 
-1. [Python 3.7.5](https://github.com/bsbrl/autoinjector/tree/Python3#1-python)
+1. [Python 3.7+](https://github.com/bsbrl/autoinjector/tree/Python3#1-python)
 	- [Packages](https://github.com/bsbrl/autoinjector/tree/Python3#python-packages)
 		- pip 
 		- Native python libraties
@@ -43,29 +43,26 @@ Currently, the autoinjector is only available with Windows support. The followin
 		- Sensapex 1.22.4
 		- scikit-image 0.19.2
 		- Scipy 1.7.3
-2. [Arduino 1.8](https://github.com/bsbrl/autoinjector/tree/Python3#2-arduino)
-3. [Micromanager 2.0 +](https://github.com/bsbrl/autoinjector/tree/Python3#3-micromanager)
-4. [Sensapex SDK](https://github.com/bsbrl/autoinjector/tree/Python3#4-sensapex-sdk)
+2. [Arduino 1.8+](https://github.com/bsbrl/autoinjector/tree/Python3#2-arduino)
+3. [Micromanager 2.0+](https://github.com/bsbrl/autoinjector/tree/Python3#3-micromanager)
+4. [Sensapex software](https://github.com/bsbrl/autoinjector/tree/Python3#4-sensapex-sdk)
 5. [The Autoinjector software](https://github.com/bsbrl/autoinjector/tree/Python3#5-autoinjector-software)
 6. [Your camera driver](https://github.com/bsbrl/autoinjector/tree/Python3#6-your-camera-driver)
-7. [Sensapex SDK](https://www.sensapex.com/products/ump-micromanipulation-system/)
 
 ## Install Instructions
 -------------
 Install the following software to operate the Autoinjector. It is recommended to install the software in the order it is listed. Make sure to run every file as administrator (right click, "Run as administrator")! Otherwise, the install may fail. 
 
 ### 1. Python
+*Note: The following section links to Python 3.7.5, but GUI has been tested and successfully opened in 3.9.13 and 3.10.5.*
 1. Download the python windows installer [here](https://www.python.org/downloads/release/python-375/). 
 2. Launch the installer and follow installation instructions on screen.
 3. Add Python to system environment path by following [these instructions](https://superuser.com/questions/143119/how-do-i-add-python-to-the-windows-path) so that you can run python from any windows command prompt.
 
 	#### Python Packages
-	1. Pip (python installer package). 
-		1. Download [get-pip.py](https://bootstrap.pypa.io/get-pip.py) (Right click and click "save as" to download the file).
-		2. Open the file in your downloads folder and click the file, this will download pip. It will not give you any confirmation, a window will pop up and disappear. Pip will have loaded after this is complete. If pip did not load successfully you will see an error in the following steps. 
 
-	2. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages):
-		- [Matplotlib](https://matplotlib.org/users/installing.html#windows)
+	1. To download the python packages run the following commands from the command prompt (for more info/support, click the names of the packages):
+		- [Matplotlib](https://matplotlib.org/stable/users/installing/index.html)
 			```
 			python -m pip install matplotlib==3.5.2
 			```
@@ -75,17 +72,17 @@ Install the following software to operate the Autoinjector. It is recommended to
 			python -m pip install numpy==1.21.6
 			```
 
-		- [OpenCV](https://pypi.org/project/opencv-python/3.1.0/)
+		- [OpenCV](https://pypi.org/project/opencv-python/4.5.5.64/)
 			```
 			python -m pip install opencv-python==4.5.5.64
 			```
 
-		- [Pyserial](https://github.com/pyserial/pyserial)
+		- [Pyserial](https://pypi.org/project/pyserial/3.5/)
 			```
 			python -m pip install pyserial==3.5
 			```
 
-		- [PyQt6](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4)
+		- [PyQt6](https://pypi.org/project/PyQt6/)
 			```
 			python -m pip install pyqt6==6.3
 			```
@@ -100,11 +97,11 @@ Install the following software to operate the Autoinjector. It is recommended to
 			python -m pip install scipy==1.7.3
 			```
 
-		- [Sensapex](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4)
+		- [Sensapex](https://pypi.org/project/sensapex/1.22.4/)
 			```
 			python -m pip install sensapex==1.22.4
 			```
-			*Note: you will need to download ump.dll and place it in Lib/site-packages/sensapex*
+			**Note: Installing sensapex from pip will likely be an incomplete installation. You will likely need to follow the guidance in this [GitHub issue](https://github.com/sensapex/sensapex-py/issues/9) to properly install the Sensapex package. In short, you must download the 1.022 binaries from [Sensapex](http://dist.sensapex.com/misc/um-sdk/latest/) and place the "libum.dll" file in the senspex package folder containing "sensapex.py" (i.e. `/python-installation-path/Lib/site-packages/sensapex`)**
 
 ### 2. Arduino
 1. Download the arduino windows installer [here](https://www.arduino.cc/en/Main/Software?).
@@ -113,15 +110,14 @@ Install the following software to operate the Autoinjector. It is recommended to
 ### 3. Micromanager
 1. Download the micromanager windows installer [here](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release).
 2. Launch the installer and follow installation instructions on screen.
-3. Follow [these instructions](https://stackoverflow.com/questions/3701646/how-to-add-to-the-pythonpath-in-windows) to add the following folder to PYTHONPATH vairable:
-	- Add "C:\Program Files\Micro-Manager-1.4" to PYTHONPATH variable
+3. Make sure it is installed at `C://Program Files/Micro-Manager-2.0`
 
 ### 4. Autoinjector Software 
 1. Download or clone this repository by clicking "Clone or Download" button on the top right area of the [Autoinjector Respository](https://github.com/bsbrl/autoinjector/tree/Python3) and extract the files. 
 
 2. Upload arduino code:
 	1. Once the arduino is installed, connect your arduino to your computer via USB.
-	2. In the downloaded Autoinjector folder, open the file "Autoinjector-\pythonarduino\pythonarduinotriggeropen.ino"
+	2. In the downloaded Autoinjector folder, open the file `/autoinjector/pythonarduino/pythonarduinotriggeropen.ino`
 	3. Follow the instructions to identify your port and connect to the arduino from the arudino software as shown in [this tutorial](https://www.arduino.cc/en/Guide/ArduinoUno#toc5). Take note of which COM port your arduino is on i.e. COM6.
 	4. Upload the pythonarduinotriggeropen.ino file as shown in [this tutorial](https://www.arduino.cc/en/Guide/ArduinoUno#toc6).
 
@@ -137,12 +133,10 @@ Install the following software to operate the Autoinjector. It is recommended to
 		```
 		This will launch the Autoinjector and report any problems to the command prompt if there is an error in the downloaded sotware. 
 
-### 5. Sensapex SDK
-1. Contact [Sensapex](https://www.sensapex.com/products/ump-micromanipulation-system/) and request the "ump.dll" file to use with python. 
-
-2. You will also need to download the file "sensapex.py" from [here](https://github.com/acq4/acq4/blob/2b7a85857b64376d19d2c8658d693b376a5fdbbf/acq4/drivers/sensapex/sensapex.py). 
-
-3. Copy the "ump.dll" and "sensapex.py" files into the folder you downloaded called "motorcontrol" which is in "autoinjector >> motorcontrol".
+### 5. Sensapex sofware
+1. Start with pip installing the sensapex package as detailed above. However, pip installing the sensapex package likely resulted in an incomplete installation (a missing piece of software).
+2. Follow the guidance in this [GitHub issue](https://github.com/sensapex/sensapex-py/issues/9) to properly install the Sensapex package.
+	* To complete the installation, you must download the 1.022 binaries from [Sensapex](http://dist.sensapex.com/misc/um-sdk/latest/) and place the "libum.dll" file in the senspex package folder containing "sensapex.py" (i.e. `/python-installation-path/Lib/site-packages/sensapex`)
 
 ### 6. Your Camera Driver
 Follow the instructions for your camera driver install. In our work we have used the [Hamamatsu Orca Camera](https://www.hamamatsu.com/us/en/product/type/C13440-20CU/index.html) and [Photometrics Cool Snap Dyno PVCam](https://www.photometrics.com/products/ccdcams/coolsnap-dyno.php)
