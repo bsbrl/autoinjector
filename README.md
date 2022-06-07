@@ -88,6 +88,10 @@ Install the following software to operate the Autoinjector. It is recommended to
 			```
 			python -m pip install pyqt6==6.3
 			```
+		- [pymmcore](https://pypi.org/project/pymmcore/)
+			```
+			python -m pip install pymmcore==10.1.1.70.5
+			```
 
 		- [scikit-image](http://scikit-image.org/docs/dev/install.html)
 			```
@@ -113,6 +117,7 @@ Install the following software to operate the Autoinjector. It is recommended to
 1. Download the micromanager windows installer [here](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release).
 2. Launch the installer and follow installation instructions on screen.
 3. Make sure it is installed at `C://Program Files/Micro-Manager-2.0`
+	* *Note: Your device interface version must match between your Micro-Manager installation and the installed pymmcore version. Detials are located at [pymmcore GitHub](https://github.com/micro-manager/pymmcore#matching-micro-manager-and-pymmcore-versions)*
 
 ### 4. Sensapex software
 1. Start with pip installing the sensapex package as detailed above. However, pip installing the sensapex package likely resulted in an incomplete installation (a missing piece of software).
