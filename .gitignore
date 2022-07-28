@@ -137,3 +137,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Miscellaneous
+Scripts
+Lib
+*.cfg
+share
+*.ps1
