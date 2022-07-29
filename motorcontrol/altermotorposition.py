@@ -1,12 +1,11 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 import os, sys, time
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 from sensapex_utils.sensapex_utils import SensapexDevice, UMP
 import numpy as np
 
-class delmotor(QThread):
-    """ QThread class to increase or decrease motor position on a given axis
+class delmotor():
+    """ Increase or decrease motor for given axis
     Inputs for the class are:
     axis = string, x y or z axis of desired motion ('x')
     direct = string, direction of motion ('increase' or 'decrease')
@@ -17,7 +16,6 @@ class delmotor(QThread):
     """
 
     def __init__(self, axis, direct, dist, speed,typeval,pos):
-        QThread.__init__(self)
         self.ump = UMP.get_ump()
         self.devids = self.ump.list_devices()
         self.devs = {i:SensapexDevice(i) for i in self.devids}
@@ -37,10 +35,7 @@ class delmotor(QThread):
 
         self.currentpos = self.devs[1].get_pos()
 
-        def __del__(self):
-            self.wait()
-
-    def run(self):
+    def start(self):
         self.changevalue()
 
     def changevalue(self):
@@ -73,9 +68,3 @@ class delmotor(QThread):
 
         if self.type == 'getposition_m2':
             self.m2 = self.devs[1].get_pos()
-
-
-        while self.devs[1].is_busy():
-            time.sleep(0.2)
-            print('in progress')
-
