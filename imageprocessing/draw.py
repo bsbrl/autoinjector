@@ -56,10 +56,6 @@ class drawobj(object):
 
     def interpolatetrajectory(self):
         #performs spline interpolation of coordinates along the height of the image
-        print('xvals')
-        print(self.xvals)
-        print('yvals')
-        print(self.yvals)
         yvals = np.array(self.yvals)
         xvals = np.array(self.xvals)
         order = np.argsort(self.yvals)        
@@ -68,14 +64,8 @@ class drawobj(object):
         ynew = np.arange(min(self.yvals),self.height,1)
         xnew = (spl(ynew))
 
-        print('xnew')
-        print(xnew)
-        print('y')
-        print(ynew)
-
         try:
             for i in range(0,len(xnew)-1):
-                print(i)
                 x = int(xnew[i])
                 y = int(ynew[i])
                 self.drawedgecoord1.append([x,y])

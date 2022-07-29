@@ -94,7 +94,7 @@ class camerasetting(QDialog):
             self.brand = 'HamamatsuHam'
             self.devicevalue = 'HamamatsuHam_DCAM'
             self.bins = "2x2"
-            self.rotate = 270
+            self.rotate = 180
             bits = 8
             self.fourtyxmagcalibdist = 40000 
             self.scalefactor = 1.3

@@ -15,6 +15,7 @@ import serial
 import time
 import sys
 import numpy as np
+import traceback
 
 
 
@@ -472,7 +473,7 @@ class ControlWindow(QMainWindow):
             ymotorline = np.sqrt((np.square(ycameraline) + np.square(xcameraline)))
             self.ymotortheta = np.arctan(float(xcameraline)/ycameraline)
             self.ymotorthetadeg =np.rad2deg(self.ymotortheta)
-            print(self.ymotortheta)
+            print('angle',self.ymotortheta, self.ymotorthetadeg)
             self.yscale = self.motorcalibdist/ymotorline
 
             #calculate total FOV of microscope in micromenters
@@ -502,10 +503,6 @@ class ControlWindow(QMainWindow):
             self.d = drawobj(self.vidctrl.frame)
             self.d.drawedgecoord1 = np.asarray(self.d.drawedgecoord1)
             self.vidctrl.edgearraypointer(self.d.drawedgecoord1)
-            print('pointer is')
-            print(self.d.drawedgecoord1)
-            np.set_printoptions(threshold=np.inf)
-            print(self.d.drawedgecoord1)
             
         except:
             self.error_msg.setText("CAM error, is camera plugged in? \nPython error = \n" + str(sys.exc_info()[1]))
@@ -715,6 +712,6 @@ if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
     app.setApplicationName('MyWindow')
-    main = ControlWindow('HamamatsuHam_DCAM', 'HamamatsuHam', 'HamamatsuHam_DCAM', '2x2', 270, 256, 1.3, 'Off', 'com3', 40000)
+    main = ControlWindow('HamamatsuHam_DCAM', 'HamamatsuHam', 'HamamatsuHam_DCAM', '2x2', 180, 256, 1.3, 'Off', 'com3', 40000)
     main.show()
     sys.exit(app.exec())
