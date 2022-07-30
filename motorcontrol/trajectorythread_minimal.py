@@ -122,14 +122,16 @@ class trajectoryimplementor(QThread):
                 zdrift = -zcorrected*(np.cos(self.thetaz))
                 print(zdrift)
 
-                # 4 axis trajectory
+                # 4 axis trajectory (updated)
                 dx = manipulator_motorscaled[0]
                 dy = manipulator_motorscaled[1]
                 dz_per_dd = np.sin(np.abs(self.thetaz))
                 dx_per_dd = np.cos(np.abs(self.thetaz))
-                self.motorcalib3 = mci(i,dx,dy,dz_per_dd,self.approachdist, self.depthintissue, self.speed)
-                # 3 axis trajecotry
+                self.motorcalib3 = mci(i,dx,dy,dx_per_dd,dz_per_dd,self.approachdist, self.depthintissue, self.speed)
+
+                # 3 axis trajecotry (original)
                 # self.motorcalib3 = mc(zdrift, zcorrected, k[0][1], self.approachdist, self.depthintissue, self.speed)
+                
                 # Run trajecotory
                 self.motorcalib3.finished.connect(self.turnsignal) # when injects positoin, sends signal which will cause next injection positoin
                 self.motorcalib3.start()

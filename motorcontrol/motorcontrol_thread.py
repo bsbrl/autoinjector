@@ -131,8 +131,10 @@ class motorcontroller_improved(QThread):
     """
     QThread class to control 4-axis sensapex manipulators and perform a
     prototypical injection into the tissue. This was designed for a 4-axis
-    manipulator but includes code for 3-axis, but it is untested on a 3-axis
-    manipualtor.
+    manipulator but includes code for 3-axis. It was tested in 3-axis mode
+    by only letting the manipulator use the y, z, and d axes. It appeared to
+    work as expected. Use the orignal "motorcontroller" if you encounter issues
+    while using this class for 3-axis manipulator control.
     
     This class assumes you want to move from a micropipette tip located on the
     edge of a tissue to perform injections at the next location. There are 4
