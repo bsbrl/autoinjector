@@ -1,6 +1,11 @@
 # Autoinjector - Python 3 Version
 -------------
-This branch is for the updated version of the Autoinjector that is compatible with Python 3.7+. The legacy (Python 2.7+) Autoinjector software and instructions are available in the [PVCAM branch.](https://github.com/bsbrl/autoinjector/tree/PVCAM#Autoinjector)
+**IMPORTANT NOTES**
+
+-	This branch is for the updated version of the Autoinjector that is compatible with Python 3.7+. The legacy (Python 2.7+) Autoinjector software and instructions are available in the [PVCAM branch.](https://github.com/bsbrl/autoinjector/tree/PVCAM#Autoinjector)
+-	The intention is for this updated Python 3 version to function identically to the legacy Python 2.7 version. We updated the software because Python 2.x is no longer receiving support and we are working on a new project using this Python 3 version as the starting point.
+-	The legacy Autoinjector software was developed for a 3-axis manipulator, but this updated Python 3 version was tested with a 4-axis manipulator. A 3-axis manipulator was "simulated" on the 4-axis manipulator by only permitting y-, z-, and d-axis (diagonal axis) movement. The software appeared to work as expected, so (I believe) this version should work for 3-axis manipulators. If you encounter errors, you may need to revert to the legacy version. Alternatively, if everything "works" but you encoutner an unexpected injection trajectory, you can try reverting from "motorcontroller_improved" to "motorcontroller" in "trajectorythread_minimal.py".
+	-	Manipulator as tested: uMp-4 with uMp_v1.21.22.500 firmware.
 
 -------------
 
