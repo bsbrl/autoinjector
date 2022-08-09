@@ -175,8 +175,9 @@ class motorcontroller_improved(QThread):
         dz_rate: Amount of z-axis/focal-axis displacement that occurs for a
             1 unit move along the injection axis.
         approachdist: (nm) Distance from which to start approaching tissue for
-            injection.
-        injectiondepth: (nm) Distance to injecte below annotated tissue surface
+            injection. As projected into the image plane (aka along x-axis.)
+        injectiondepth: (nm) Distance to injecte below annotated tissue surface.
+            As projected into the image plane (aka along x-axis.)
         speed: (um/s) Speed of injections
     """
 
@@ -192,8 +193,8 @@ class motorcontroller_improved(QThread):
         self.stepsizey = dy
         self.dx_rate = dx_rate
         self.dz_rate = dz_rate
-        self.approachdist = approachdist
-        self.injectiondepth = injectiondepth
+        self.approachdist_d = approachdist * 1/dx_rate # Convert approach distance along x-axis (in image) to d-axis displacemnt
+        self.injectiondepth_d = injectiondepth * 1/dx_rate # Convert injection depth along x-axis (in image) to d-axis displacemnt
         self.speed = speed
         if len(self.devs[1].get_pos()) == 3:
             self.n_axes = 3
@@ -242,7 +243,7 @@ class motorcontroller_improved(QThread):
         # If first injection, then displace z axis so the injection positiongs are in focus
         start_pos = position0[:]
         if self.inj_ind == 1:
-            start_pos[self.axes['z']] -= int(self.injectiondepth*self.dz_rate)
+            start_pos[self.axes['z']] -= int(self.injectiondepth_d*self.dz_rate)
             move_req=self.devs[1].goto_pos(start_pos, self.speed)
             print(f'Starting position:\t{start_pos}',end='... ')
             while move_req.finished is False:
@@ -251,7 +252,7 @@ class motorcontroller_improved(QThread):
         
         # Retract injection axis (by approach distance)
         pullout_pos = start_pos[:]
-        pullout_pos[self.axes['d']] -= int(self.approachdist)
+        pullout_pos[self.axes['d']] -= int(self.approachdist_d)
         move_req = self.devs[1].goto_pos(pullout_pos, self.speed)
         print(f'Pull out position:\t{pullout_pos}',end='... ')
         while move_req.finished is False:
@@ -276,7 +277,7 @@ class motorcontroller_improved(QThread):
 
         # go into tissue and inject
         inject_pos = preinject_pos[:]
-        inject_pos[self.axes['d']] += int((self.injectiondepth + self.approachdist))
+        inject_pos[self.axes['d']] += int((self.injectiondepth_d + self.approachdist_d))
         move_req = self.devs[1].goto_pos(inject_pos, self.speed)
         print(f'Injection position:\t{inject_pos}',end='... ')
         while move_req.finished is False:
@@ -286,7 +287,7 @@ class motorcontroller_improved(QThread):
 
         # retract to tissue edge
         retract_pos = inject_pos[:]
-        retract_pos[self.axes['d']] -= int(self.injectiondepth)
+        retract_pos[self.axes['d']] -= int(self.injectiondepth_d)
         move_req = self.devs[1].goto_pos(retract_pos, self.speed)
         print(f'Retraction position:\t{retract_pos}',end='... ')
         while move_req.finished is False:
@@ -312,7 +313,7 @@ class motorcontroller_improved(QThread):
         # Displace tissue away from edge and down into focal plane
         end_pos = current_pos[:]
         end_pos[self.axes['x']] -= dist
-        end_pos[self.axes['z']] += self.injectiondepth*self.dz_rate
+        end_pos[self.axes['z']] += self.injectiondepth_d*self.dz_rate
         if self.n_axes == 3:
             end_pos[2] += dist*self.dz_rate
         print("end pos =" + str(end_pos))
